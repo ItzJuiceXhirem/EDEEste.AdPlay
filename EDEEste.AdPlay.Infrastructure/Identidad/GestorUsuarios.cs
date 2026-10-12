@@ -13,12 +13,18 @@ namespace EDEEste.AdPlay.Infrastructure.Identidad
     public class GestorUsuarios : IGestorUsuarios
     {
         private readonly UserManager<UsuarioAplicacion> _usuarios;
+        private readonly RoleManager<RolAplicacion> _roles;
         private readonly ContextoPublicidad _contexto;
         private readonly TimeProvider _reloj;
 
-        public GestorUsuarios(UserManager<UsuarioAplicacion> usuarios, ContextoPublicidad contexto, TimeProvider reloj)
+        public GestorUsuarios(
+            UserManager<UsuarioAplicacion> usuarios,
+            RoleManager<RolAplicacion> roles,
+            ContextoPublicidad contexto,
+            TimeProvider reloj)
         {
             _usuarios = usuarios;
+            _roles = roles;
             _contexto = contexto;
             _reloj = reloj;
         }
@@ -75,6 +81,9 @@ namespace EDEEste.AdPlay.Infrastructure.Identidad
             return filas.Select(f => ADto(f.Usuario, f.Rol ?? string.Empty)).ToList();
         }
 
+        public Task<bool> ExistenUsuariosAsync(CancellationToken ct = default) =>
+            _contexto.Users.AnyAsync(ct);
+
         public async Task<int> ContarAdministradoresActivosAsync(CancellationToken ct = default) =>
             await (
                 from u in _contexto.Users
@@ -95,6 +104,12 @@ namespace EDEEste.AdPlay.Infrastructure.Identidad
                 EstaActivo = true,
                 FechaCreacionUtc = _reloj.GetUtcNow().UtcDateTime
             };
+
+            // Garantiza que el rol exista aunque aún no se haya ejecutado la inicialización de seguridad.
+            if (!await _roles.RoleExistsAsync(rol))
+            {
+                LanzarSiHayErrores(await _roles.CreateAsync(new RolAplicacion(rol)));
+            }
 
             LanzarSiHayErrores(await _usuarios.CreateAsync(usuario, clave));
 

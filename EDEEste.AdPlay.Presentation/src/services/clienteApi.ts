@@ -98,7 +98,9 @@ async function enviar(ruta: string, init: OpcionesSolicitud): Promise<Response> 
       return await fetch(urlApi(ruta), { ...init, headers: construirCabeceras(init) })
     } catch {
       // fetch solo rechaza ante fallos de red (servidor caído, sin conexión, CORS).
-      throw new ErrorApi(0, { detail: 'No se pudo conectar con el servidor. Verifique la conexión e intente de nuevo.' })
+      throw new ErrorApi(0, {
+        detail: `No se pudo conectar con el servidor (${URL_BASE_API}). Verifique que la API esté en ejecución e intente de nuevo.`,
+      })
     }
   }
 
@@ -148,7 +150,7 @@ export async function solicitarArchivo(ruta: string): Promise<{ blob: Blob; nomb
 }
 
 export const api = {
-  get: <T>(ruta: string) => solicitar<T>(ruta),
+  get: <T>(ruta: string, opciones: OpcionesSolicitud = {}) => solicitar<T>(ruta, opciones),
   post: <T>(ruta: string, cuerpo?: unknown, opciones: OpcionesSolicitud = {}) =>
     solicitar<T>(ruta, {
       ...opciones,

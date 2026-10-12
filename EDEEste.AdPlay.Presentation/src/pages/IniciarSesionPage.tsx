@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { AvisoError } from '../components/Comunes'
-import { useAccion } from '../hooks/useDatos'
+import { useAccion, useDatos } from '../hooks/useDatos'
+import { sesionApi } from '../services/sesionApi'
 import { useAuth } from '../hooks/useAuth'
 
 export function IniciarSesionPage() {
@@ -9,6 +10,7 @@ export function IniciarSesionPage() {
   const navegar = useNavigate()
   const ubicacion = useLocation()
   const accion = useAccion()
+  const registro = useDatos(() => sesionApi.registroInicialDisponible())
   const [correo, setCorreo] = useState('')
   const [clave, setClave] = useState('')
 
@@ -39,6 +41,11 @@ export function IniciarSesionPage() {
           <input type="password" required autoComplete="current-password" value={clave} onChange={(e) => setClave(e.target.value)} />
         </label>
         <button className="primario" disabled={accion.ocupado}>{accion.ocupado ? 'Entrando…' : 'Entrar'}</button>
+        {registro.datos && (
+          <p className="suave">
+            Todavía no hay usuarios. <Link to="/registro">Cree la primera cuenta (administrador)</Link>.
+          </p>
+        )}
       </form>
     </main>
   )

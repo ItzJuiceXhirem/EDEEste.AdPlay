@@ -13,6 +13,8 @@ namespace EDEEste.AdPlay.API.Endpoints
 
         public sealed record RenovarSesionSolicitud(string RenovarToken);
 
+        public sealed record RegistroInicialEstado(bool Disponible);
+
         public static IEndpointRouteBuilder MapearAutenticacion(this IEndpointRouteBuilder rutas)
         {
             var auth = rutas.MapGroup("/auth").WithTags("Autenticación");
@@ -21,6 +23,19 @@ namespace EDEEste.AdPlay.API.Endpoints
             auth.MapPost("/iniciar-sesion", async (CredencialesDto dto, ServicioAutenticacion servicio, CancellationToken ct) =>
             {
                 var sesion = await servicio.IniciarSesionAsync(dto, ct);
+                return Results.SignIn(CrearPrincipal(sesion), authenticationScheme: BearerTokenDefaults.AuthenticationScheme);
+            })
+            .AllowAnonymous()
+            .RequireRateLimiting(PoliticaLimiteInicioSesion);
+
+            // Registro de primera vez: solo mientras el sistema no tenga ningún usuario. Crea al administrador inicial.
+            auth.MapGet("/registro-inicial", async (ServicioAutenticacion servicio, CancellationToken ct) =>
+                Results.Ok(new RegistroInicialEstado(await servicio.RegistroInicialDisponibleAsync(ct))))
+                .AllowAnonymous();
+
+            auth.MapPost("/registro-inicial", async (RegistroInicialDto dto, ServicioAutenticacion servicio, CancellationToken ct) =>
+            {
+                var sesion = await servicio.RegistrarAdministradorInicialAsync(dto, ct);
                 return Results.SignIn(CrearPrincipal(sesion), authenticationScheme: BearerTokenDefaults.AuthenticationScheme);
             })
             .AllowAnonymous()

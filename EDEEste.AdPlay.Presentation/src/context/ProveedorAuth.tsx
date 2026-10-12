@@ -34,6 +34,11 @@ export function ProveedorAuth({ children }: { children: ReactNode }) {
     setSesion(await sesionApi.obtenerSesion())
   }, [])
 
+  const registrarAdministradorInicial = useCallback(async (correo: string, nombreCompleto: string, clave: string) => {
+    guardarTokens(await sesionApi.registrarAdministradorInicial(correo, nombreCompleto, clave))
+    setSesion(await sesionApi.obtenerSesion())
+  }, [])
+
   const cerrarSesion = useCallback(() => {
     limpiarTokens()
     setSesion(null)
@@ -45,9 +50,10 @@ export function ProveedorAuth({ children }: { children: ReactNode }) {
       cargando,
       esAdministrador: sesion?.rol === ROLES.administrador,
       iniciarSesion,
+      registrarAdministradorInicial,
       cerrarSesion,
     }),
-    [sesion, cargando, iniciarSesion, cerrarSesion],
+    [sesion, cargando, iniciarSesion, registrarAdministradorInicial, cerrarSesion],
   )
 
   return <AuthContexto.Provider value={valor}>{children}</AuthContexto.Provider>

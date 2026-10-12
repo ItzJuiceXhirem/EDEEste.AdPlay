@@ -8,6 +8,8 @@ export interface ValorAuth {
   cargando: boolean
   esAdministrador: boolean
   iniciarSesion: (correo: string, clave: string) => Promise<void>
+  /** Crea al primer administrador y deja la sesión iniciada. Solo funciona mientras no haya usuarios. */
+  registrarAdministradorInicial: (correo: string, nombreCompleto: string, clave: string) => Promise<void>
   cerrarSesion: () => void
 }
 

@@ -31,6 +31,9 @@ namespace EDEEste.AdPlay.Application.Contratos.Servicios
         Task<IReadOnlyList<UsuarioInfo>> ListarAsync(CancellationToken ct = default);
         Task<int> ContarAdministradoresActivosAsync(CancellationToken ct = default);
 
+        /// <summary>Indica si ya hay al menos un usuario (activo o no).</summary>
+        Task<bool> ExistenUsuariosAsync(CancellationToken ct = default);
+
         Task<UsuarioInfo> CrearAsync(string correo, string nombreCompleto, string rol, string clave, CancellationToken ct = default);
         Task ActualizarAsync(int id, string nombreCompleto, string rol, bool estaActivo, CancellationToken ct = default);
         Task RestablecerClaveAsync(int id, string nuevaClave, CancellationToken ct = default);

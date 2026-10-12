@@ -3,6 +3,7 @@ import { LayoutAdmin } from './components/LayoutAdmin'
 import { RutaProtegida } from './components/RutaProtegida'
 import { SOLO_ADMINISTRADOR } from './constants/seguridad'
 import { IniciarSesionPage } from './pages/IniciarSesionPage'
+import { RegistroInicialPage } from './pages/RegistroInicialPage'
 import { AuditoriaPage } from './pages/admin/AuditoriaPage'
 import { CuentaPage } from './pages/admin/CuentaPage'
 import { HistorialPage } from './pages/admin/HistorialPage'
@@ -20,6 +21,7 @@ export default function App() {
       {/* El reproductor se autentica con el token de su pantalla, no con una sesión de usuario. */}
       <Route path="/reproductor" element={<ReproductorPage />} />
       <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />
+      <Route path="/registro" element={<RegistroInicialPage />} />
 
       <Route element={<RutaProtegida />}>
         <Route path="/admin" element={<LayoutAdmin />}>

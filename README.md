@@ -66,7 +66,10 @@ autentican con el token de su pantalla). La sesión es un token Bearer: `POST /a
   proxy inverso, configura `ForwardedHeaders` para que la API vea la IP real del cliente.
 - **Llaves de Data Protection:** los tokens de sesión se protegen con ellas. En producción con más de una instancia,
   o si los usuarios no deben perder la sesión al reiniciar, persístelas en un almacén compartido.
-- **Administrador inicial:** con `Seguridad:InicializarAlIniciar=true`, al arrancar se crean los roles y, si no hay
+- **Registro de primera vez:** mientras el sistema no tenga ningún usuario, el inicio de sesión ofrece "Cree la primera
+  cuenta" (`/registro`), que crea al primer administrador. En cuanto existe cualquier usuario ese registro se cierra
+  (la API responde 409); las demás cuentas las crea un administrador. No hay registro abierto a propósito.
+- **Administrador inicial por configuración (alternativa):** con `Seguridad:InicializarAlIniciar=true`, al arrancar se crean los roles y, si no hay
   usuarios, el administrador de `Seguridad:AdministradorInicial` (`Correo`, `NombreCompleto`, `Clave`). Define esos
   valores con User Secrets o variables de entorno, nunca en un archivo del repositorio:
 

@@ -1,4 +1,3 @@
-using System.Net.Mail;
 using EDEEste.AdPlay.Application.Contratos.Persistencia;
 using EDEEste.AdPlay.Application.Contratos.Servicios;
 using EDEEste.AdPlay.Application.DTOs;
@@ -39,13 +38,10 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Usuarios
         public async Task<UsuarioDto> CrearAsync(CrearUsuarioDto dto, CancellationToken ct = default)
         {
             var errores = new ErroresValidacion();
-            ValidarCorreo(errores, nameof(dto.Correo), dto.Correo);
-            ValidarNombre(errores, nameof(dto.NombreCompleto), dto.NombreCompleto);
-            ValidarRol(errores, nameof(dto.Rol), dto.Rol);
-            if (string.IsNullOrEmpty(dto.Clave))
-            {
-                errores.Agregar(nameof(dto.Clave), "Es obligatoria.");
-            }
+            ValidadorUsuarios.Correo(errores, nameof(dto.Correo), dto.Correo);
+            ValidadorUsuarios.Nombre(errores, nameof(dto.NombreCompleto), dto.NombreCompleto);
+            ValidadorUsuarios.Rol(errores, nameof(dto.Rol), dto.Rol);
+            ValidadorUsuarios.Clave(errores, nameof(dto.Clave), dto.Clave);
 
             errores.LanzarSiHayErrores();
 
@@ -58,8 +54,8 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Usuarios
         public async Task<UsuarioDto> ActualizarAsync(int id, ActualizarUsuarioDto dto, CancellationToken ct = default)
         {
             var errores = new ErroresValidacion();
-            ValidarNombre(errores, nameof(dto.NombreCompleto), dto.NombreCompleto);
-            ValidarRol(errores, nameof(dto.Rol), dto.Rol);
+            ValidadorUsuarios.Nombre(errores, nameof(dto.NombreCompleto), dto.NombreCompleto);
+            ValidadorUsuarios.Rol(errores, nameof(dto.Rol), dto.Rol);
             errores.LanzarSiHayErrores();
 
             var actual = await _gestor.ObtenerAsync(id, ct) ?? throw new ExcepcionNoEncontrado("el usuario", id);
@@ -120,30 +116,6 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Usuarios
             if (dejaDeSerAdministradorActivo && await _gestor.ContarAdministradoresActivosAsync(ct) <= 1)
             {
                 throw new ExcepcionConflicto("Debe existir al menos un administrador activo.");
-            }
-        }
-
-        private static void ValidarCorreo(ErroresValidacion errores, string campo, string? correo)
-        {
-            errores.Texto(campo, correo, LongitudesMaximas.Correo);
-            if (!string.IsNullOrWhiteSpace(correo) && !EsCorreoValido(correo.Trim()))
-            {
-                errores.Agregar(campo, "No es una dirección de correo válida.");
-            }
-        }
-
-        /// <summary>Rechaza formas como "Nombre &lt;a@b.com&gt;": la dirección debe ser exactamente lo escrito.</summary>
-        private static bool EsCorreoValido(string correo) =>
-            MailAddress.TryCreate(correo, out var direccion) && direccion.Address == correo;
-
-        private static void ValidarNombre(ErroresValidacion errores, string campo, string? nombre) =>
-            errores.Texto(campo, nombre, LongitudesMaximas.NombreCompleto);
-
-        private static void ValidarRol(ErroresValidacion errores, string campo, string? rol)
-        {
-            if (rol is null || !RolesSistema.Todos.Contains(rol))
-            {
-                errores.Agregar(campo, $"Debe ser uno de: {string.Join(", ", RolesSistema.Todos)}.");
             }
         }
 

@@ -12,76 +12,9 @@ namespace EDEEste.AdPlay.Tests.Application
     {
         private static readonly DateTime Fecha = new(2026, 10, 12, 0, 0, 0, DateTimeKind.Utc);
 
-        private sealed class GestorFalso : IGestorUsuarios
+        private static (ServicioUsuarios Servicio, GestorUsuariosFalso Gestor, AuditoriaFalsa Auditoria, UnidadDeTrabajoFalsa Unidad) Crear(int? usuarioActualId = 1)
         {
-            public Dictionary<int, UsuarioInfo> Usuarios { get; } = [];
-
-            public Task<ValidacionCredenciales> ValidarCredencialesAsync(string correo, string clave, CancellationToken ct = default) =>
-                throw new NotSupportedException();
-
-            public Task<UsuarioInfo?> ObtenerAsync(int id, CancellationToken ct = default) =>
-                Task.FromResult(Usuarios.GetValueOrDefault(id));
-
-            public Task<IReadOnlyList<UsuarioInfo>> ListarAsync(CancellationToken ct = default) =>
-                Task.FromResult<IReadOnlyList<UsuarioInfo>>(Usuarios.Values.ToList());
-
-            public Task<int> ContarAdministradoresActivosAsync(CancellationToken ct = default) =>
-                Task.FromResult(Usuarios.Values.Count(u => u.Rol == RolesSistema.Administrador && u.EstaActivo));
-
-            public Task<UsuarioInfo> CrearAsync(string correo, string nombreCompleto, string rol, string clave, CancellationToken ct = default)
-            {
-                var usuario = new UsuarioInfo(Usuarios.Count + 1, correo, nombreCompleto, rol, true, Fecha);
-                Usuarios[usuario.Id] = usuario;
-                return Task.FromResult(usuario);
-            }
-
-            public Task ActualizarAsync(int id, string nombreCompleto, string rol, bool estaActivo, CancellationToken ct = default)
-            {
-                Usuarios[id] = Usuarios[id] with { NombreCompleto = nombreCompleto, Rol = rol, EstaActivo = estaActivo };
-                return Task.CompletedTask;
-            }
-
-            public Task RestablecerClaveAsync(int id, string nuevaClave, CancellationToken ct = default) => Task.CompletedTask;
-
-            public Task<bool> CambiarClaveAsync(int id, string claveActual, string nuevaClave, CancellationToken ct = default) =>
-                Task.FromResult(claveActual == "correcta");
-
-            public Task<IReadOnlyDictionary<int, string>> ObtenerNombresAsync(IEnumerable<int> ids, CancellationToken ct = default) =>
-                Task.FromResult<IReadOnlyDictionary<int, string>>(new Dictionary<int, string>());
-        }
-
-        private sealed class AuditoriaFalsa : IRegistroAuditoria
-        {
-            public List<(AccionAuditoria Accion, string Tipo, int? Id, string? Detalle)> Registros { get; } = [];
-
-            public void Registrar(AccionAuditoria accion, EntidadBase entidad, string? detalle = null) =>
-                Registros.Add((accion, entidad.GetType().Name, entidad.Id, detalle));
-
-            public void Registrar(AccionAuditoria accion, string tipoEntidad, int? entidadId, string? detalle = null, int? usuarioId = null) =>
-                Registros.Add((accion, tipoEntidad, entidadId, detalle));
-        }
-
-        private sealed class UnidadDeTrabajoFalsa : IUnidadDeTrabajo
-        {
-            public int Guardados { get; private set; }
-
-            public Task GuardarCambiosAsync(CancellationToken ct = default)
-            {
-                Guardados++;
-                return Task.CompletedTask;
-            }
-        }
-
-        private sealed class UsuarioActualFalso(int? id) : IUsuarioActual
-        {
-            public bool EstaAutenticado => id.HasValue;
-            public int? Id => id;
-            public string? Nombre => "Actual";
-        }
-
-        private static (ServicioUsuarios Servicio, GestorFalso Gestor, AuditoriaFalsa Auditoria, UnidadDeTrabajoFalsa Unidad) Crear(int? usuarioActualId = 1)
-        {
-            var gestor = new GestorFalso();
+            var gestor = new GestorUsuariosFalso();
             var auditoria = new AuditoriaFalsa();
             var unidad = new UnidadDeTrabajoFalsa();
             return (new ServicioUsuarios(gestor, auditoria, unidad, new UsuarioActualFalso(usuarioActualId)), gestor, auditoria, unidad);
