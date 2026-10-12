@@ -1,0 +1,76 @@
+@EDEEste.AdPlay.API_HostAddress = http://localhost:5218
+# Pegue aquí el accessToken que devuelve el inicio de sesión.
+@accessToken = pegar-aqui-el-token-de-acceso
+@token = pegar-aqui-el-token-del-dispositivo
+
+### Iniciar sesión (use las credenciales del administrador inicial)
+POST {{EDEEste.AdPlay.API_HostAddress}}/api/auth/iniciar-sesion
+Content-Type: application/json
+
+{
+  "correo": "admin@empresa.com",
+  "clave": "<contraseña>"
+}
+
+###
+
+GET {{EDEEste.AdPlay.API_HostAddress}}/api/sucursales
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+POST {{EDEEste.AdPlay.API_HostAddress}}/api/grupos-pantallas
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "sucursalId": 1,
+  "nombre": "Recepción"
+}
+
+###
+
+POST {{EDEEste.AdPlay.API_HostAddress}}/api/pantallas
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "codigoPantalla": "MEGA-REC-01",
+  "nombre": "TV recepción",
+  "grupoPantallaId": 1,
+  "modoReproduccion": "NavegadorWeb"
+}
+
+###
+
+POST {{EDEEste.AdPlay.API_HostAddress}}/api/pantallas/1/token
+Authorization: Bearer {{accessToken}}
+
+###
+
+# Asignación con horario: de lunes a viernes de 08:00 a 18:00 (zona horaria predeterminada de la empresa)
+POST {{EDEEste.AdPlay.API_HostAddress}}/api/asignaciones
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "listaReproduccionId": 1,
+  "sucursalId": 1,
+  "horarios": [
+    { "dias": ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"], "horaInicio": "08:00:00", "horaFin": "18:00:00" }
+  ]
+}
+
+###
+
+GET {{EDEEste.AdPlay.API_HostAddress}}/api/reportes/estado-pantallas
+Authorization: Bearer {{accessToken}}
+
+###
+
+# El reproductor no usa sesión de usuario: se autentica con el token de su pantalla.
+GET {{EDEEste.AdPlay.API_HostAddress}}/api/reproductor/manifiesto
+X-Token-Dispositivo: {{token}}
+
+###

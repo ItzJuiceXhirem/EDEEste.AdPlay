@@ -1,0 +1,98 @@
+.reproductor {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  overflow: hidden;
+  cursor: none;
+}
+
+.medio-reproductor {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  animation: aparecer 600ms ease-out;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Pantalla de espera: evita una pantalla en blanco cuando no hay contenido o está deshabilitada. */
+.espera {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #fff;
+  text-align: center;
+  padding: 24px;
+  background: linear-gradient(120deg, #0b2545, #0b5cab, #13315c, #0b2545);
+  background-size: 300% 300%;
+  animation: degradado 14s ease infinite;
+}
+
+.espera h1 {
+  font-size: clamp(1.6rem, 4vw, 3.2rem);
+  font-weight: 600;
+  margin: 24px 0 0;
+}
+
+.espera p {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  opacity: 0.8;
+  margin: 0;
+}
+
+.espera-marca {
+  position: relative;
+  width: clamp(120px, 18vw, 220px);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: clamp(1.1rem, 2.4vw, 1.8rem);
+  letter-spacing: 0.04em;
+}
+
+.espera-anillo {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 4px solid rgb(255 255 255 / 20%);
+  border-top-color: #fff;
+  animation: girar 2.4s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes degradado {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .espera,
+  .espera-anillo,
+  .medio-reproductor {
+    animation: none;
+  }
+}
