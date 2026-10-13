@@ -1,1 +1,9 @@
-<Solution />
+<Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests/EDEEste.AdPlay.Tests/EDEEste.AdPlay.Tests.csproj" />
+  </Folder>
+  <Project Path="EDEEste.AdPlay.API/EDEEste.AdPlay.API.csproj" />
+  <Project Path="EDEEste.AdPlay.Application/EDEEste.AdPlay.Application.csproj" />
+  <Project Path="EDEEste.AdPlay.Domain/EDEEste.AdPlay.Domain.csproj" />
+  <Project Path="EDEEste.AdPlay.Infrastructure/EDEEste.AdPlay.Infrastructure.csproj" />
+</Solution>

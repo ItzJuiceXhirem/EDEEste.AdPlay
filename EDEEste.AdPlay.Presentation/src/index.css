@@ -1,0 +1,514 @@
+:root {
+  --color-fondo: #f4f6f9;
+  --color-superficie: #ffffff;
+  --color-borde: #dde2ea;
+  --color-texto: #1d2533;
+  --color-texto-suave: #5c6778;
+  --color-primario: #0b5cab;
+  --color-primario-hover: #094a8a;
+  --color-peligro: #b42318;
+  --color-exito: #067647;
+  --color-aviso: #b54708;
+  --radio: 8px;
+  --sombra: 0 1px 2px rgb(16 24 40 / 6%), 0 1px 3px rgb(16 24 40 / 10%);
+
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  color: var(--color-texto);
+  background: var(--color-fondo);
+  line-height: 1.45;
+  font-size: 15px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-fondo);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 12px;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 1.5rem;
+}
+
+h2 {
+  font-size: 1.15rem;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
+/* Estructura del panel */
+.panel {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+.panel-menu {
+  background: #0f1f35;
+  color: #fff;
+  padding: 20px 12px;
+}
+
+.panel-menu .marca {
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0 8px 20px;
+}
+
+.panel-menu .marca small {
+  display: block;
+  font-weight: 400;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.panel-menu a {
+  display: block;
+  color: #c9d4e3;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-bottom: 2px;
+}
+
+.panel-menu a:hover {
+  background: rgb(255 255 255 / 8%);
+  color: #fff;
+}
+
+.panel-menu a.active {
+  background: var(--color-primario);
+  color: #fff;
+}
+
+.panel-contenido {
+  padding: 24px 28px;
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Componentes */
+.tarjeta {
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 16px 18px;
+  margin-bottom: 18px;
+}
+
+.fila {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.columnas {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 2fr;
+  gap: 18px;
+  align-items: start;
+}
+
+@media (max-width: 1000px) {
+  .columnas {
+    grid-template-columns: 1fr;
+  }
+}
+
+label.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--color-texto-suave);
+}
+
+label.casilla {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  padding: 7px 9px;
+  border: 1px solid var(--color-borde);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--color-texto);
+  min-width: 0;
+}
+
+input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 1px solid var(--color-borde);
+  background: #fff;
+  color: var(--color-texto);
+  padding: 7px 12px;
+}
+
+button:hover:not(:disabled) {
+  background: #f0f3f7;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+button.primario {
+  background: var(--color-primario);
+  border-color: var(--color-primario);
+  color: #fff;
+}
+
+button.primario:hover:not(:disabled) {
+  background: var(--color-primario-hover);
+}
+
+button.peligro {
+  color: var(--color-peligro);
+}
+
+button.mini {
+  padding: 3px 8px;
+  font-size: 0.82rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--color-borde);
+  vertical-align: middle;
+}
+
+th {
+  color: var(--color-texto-suave);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.tabla-desplazable {
+  overflow-x: auto;
+}
+
+.insignia {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: #eef1f5;
+  color: var(--color-texto-suave);
+  white-space: nowrap;
+}
+
+.insignia.exito {
+  background: #dcfae6;
+  color: var(--color-exito);
+}
+
+.insignia.peligro {
+  background: #fee4e2;
+  color: var(--color-peligro);
+}
+
+.insignia.aviso {
+  background: #fef0c7;
+  color: var(--color-aviso);
+}
+
+.aviso {
+  border-radius: 6px;
+  padding: 9px 12px;
+  margin: 10px 0;
+  font-size: 0.9rem;
+}
+
+.aviso.error {
+  background: #fee4e2;
+  color: var(--color-peligro);
+}
+
+.aviso.info {
+  background: #e0eefc;
+  color: #0b4a8a;
+  word-break: break-all;
+}
+
+.suave {
+  color: var(--color-texto-suave);
+  font-size: 0.85rem;
+}
+
+.lista-seleccionable {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lista-seleccionable li button {
+  width: 100%;
+  text-align: left;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.lista-seleccionable li button.seleccionado {
+  background: #e0eefc;
+  color: var(--color-primario);
+  font-weight: 600;
+}
+
+.cuadricula-medios {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.medio {
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  overflow: hidden;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.medio .vista {
+  aspect-ratio: 16 / 9;
+  background: #10151f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.medio .vista img,
+.medio .vista video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.medio .info {
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.medio .info strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arbol {
+  list-style: none;
+  padding-left: 18px;
+  margin: 4px 0;
+}
+
+/* Inicio de sesión */
+.acceso {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.acceso-formulario {
+  width: 100%;
+  max-width: 380px;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+/* Usuario en el menú lateral */
+.panel-usuario {
+  margin-top: 28px;
+  padding-top: 14px;
+  border-top: 1px solid rgb(255 255 255 / 15%);
+  display: grid;
+  gap: 8px;
+}
+
+.panel-usuario a {
+  display: block;
+  padding: 4px 10px;
+  color: #fff;
+}
+
+.panel-usuario small {
+  display: block;
+  opacity: 0.7;
+}
+
+.panel-usuario button {
+  margin: 0 10px;
+  background: transparent;
+  color: #c9d4e3;
+  border-color: rgb(255 255 255 / 25%);
+}
+
+/* Filtros, paginación y pestañas */
+.filtros {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+
+.paginacion {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.pestanas {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.pestanas button {
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+}
+
+.pestanas button.activa {
+  border-bottom-color: var(--color-primario);
+  color: var(--color-primario);
+  font-weight: 600;
+}
+
+/* Supervisión */
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.indicador {
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: 12px 14px;
+}
+
+.indicador strong {
+  display: block;
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+.indicador span {
+  color: var(--color-texto-suave);
+  font-size: 0.82rem;
+}
+
+.indicador.exito strong {
+  color: var(--color-exito);
+}
+
+.indicador.peligro strong {
+  color: var(--color-peligro);
+}
+
+.indicador.aviso strong {
+  color: var(--color-aviso);
+}
+
+.grupo-supervision h3 {
+  margin: 14px 0 6px;
+  font-size: 0.95rem;
+  color: var(--color-texto-suave);
+}
+
+/* Selector de días de un horario */
+.dias {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.dias label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--color-borde);
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.dias label.marcado {
+  background: #e0eefc;
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+
+.dias input {
+  display: none;
+}
+
+.horario {
+  border: 1px dashed var(--color-borde);
+  border-radius: var(--radio);
+  padding: 10px;
+  margin: 8px 0;
+  display: grid;
+  gap: 8px;
+}
