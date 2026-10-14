@@ -10,6 +10,8 @@ export interface ValorAuth {
   iniciarSesion: (correo: string, clave: string) => Promise<void>
   /** Crea al primer administrador y deja la sesión iniciada. Solo funciona mientras no haya usuarios. */
   registrarAdministradorInicial: (correo: string, nombreCompleto: string, clave: string) => Promise<void>
+  /** Crea la cuenta de una invitación y deja la sesión iniciada. */
+  activarCuenta: (token: string, nombreCompleto: string, clave: string) => Promise<void>
   cerrarSesion: () => void
   /** Vuelve a leer la sesión (por ejemplo, tras cambiar la foto de perfil). */
   refrescarSesion: () => Promise<void>

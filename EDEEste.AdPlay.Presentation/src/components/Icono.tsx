@@ -221,6 +221,12 @@ const trazos = {
       <path d="M10.8 12.2L20 3M17 6l3 3M14 9l2 2" />
     </>
   ),
+  sobre: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M3 7l9 6 9-6" />
+    </>
+  ),
   arroba: (
     <>
       <circle cx="12" cy="12" r="4" />

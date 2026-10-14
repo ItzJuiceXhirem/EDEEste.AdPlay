@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useMemo, useState, type FormEvent } from
 import { CartelAnuncio } from '../../components/CartelAnuncio'
 import { AvisoError, Buscador, CabeceraPagina, Esqueleto, Interruptor, Migas, Pestanas, Punto, Segmento, Vacio } from '../../components/Comunes'
 import { Icono } from '../../components/Icono'
+import { DialogoEnlace } from '../../components/DialogoEnlace'
 import { Cajon, Dialogo } from '../../components/Ventanas'
 import { LONGITUDES } from '../../constants/limites'
 import { useAhora } from '../../hooks/useAnimacion'
@@ -471,7 +472,18 @@ export function PantallasPage() {
           alConfirmar={() => void emitirEnlace(modal.pantalla)}
         />
       )}
-      {modal?.tipo === 'enlace' && <DialogoEnlace nombre={modal.nombre} url={modal.url} alCerrar={() => setModal(null)} />}
+      {modal?.tipo === 'enlace' && (
+        <DialogoEnlace
+          titulo={`Enlace de «${modal.nombre}»`}
+          descripcion={
+            <>
+              Ábralo en el navegador del televisor. <strong style={{ color: 'var(--titulo)' }}>Se muestra una sola vez</strong>: si se pierde, genere uno nuevo.
+            </>
+          }
+          url={modal.url}
+          alCerrar={() => setModal(null)}
+        />
+      )}
       {vivo && <DialogoVivo item={vivo} ahora={ahora} alCerrar={() => setModal(null)} />}
     </>
   )
@@ -732,55 +744,6 @@ function DialogoRotar({ pantalla, ocupado, alCerrar, alConfirmar }: { pantalla: 
         <button className="boton boton-primario" type="button" onClick={alConfirmar} disabled={ocupado}>
           {ocupado && <Icono nombre="cargando" className="girar" grosor={2.4} />}
           Generar enlace nuevo
-        </button>
-      </div>
-    </Dialogo>
-  )
-}
-
-function DialogoEnlace({ nombre, url, alCerrar }: { nombre: string; url: string; alCerrar: () => void }) {
-  const id = useId()
-  const [copiado, setCopiado] = useState(false)
-
-  useEffect(() => {
-    if (!copiado) {
-      return
-    }
-    const espera = window.setTimeout(() => setCopiado(false), 2000)
-    return () => window.clearTimeout(espera)
-  }, [copiado])
-
-  const copiar = async () => {
-    try {
-      await navigator.clipboard.writeText(url)
-      setCopiado(true)
-    } catch {
-      // Sin permiso de portapapeles: la persona puede seleccionar el texto a mano.
-    }
-  }
-
-  return (
-    // No se cierra con clic fuera: el enlace se muestra una sola vez.
-    <Dialogo titulo={`Enlace de ${nombre}`} idTitulo={id} alCerrar={alCerrar}>
-      <IconoDialogo icono="enlace" fondo="color-mix(in srgb, var(--estado-en-linea) 22%, transparent)" color="var(--titulo)" />
-      <div>
-        <h2 id={id} className="titulo-serif" style={{ margin: '0 0 6px', fontSize: 24, lineHeight: '32px' }}>
-          Enlace de «{nombre}»
-        </h2>
-        <p style={{ fontSize: 14, lineHeight: '21px', color: 'var(--texto)' }}>
-          Ábralo en el navegador del televisor. <strong style={{ color: 'var(--titulo)' }}>Se muestra una sola vez</strong>: si se pierde, genere uno nuevo.
-        </p>
-      </div>
-      <div className="enlace-caja">
-        <code title={url}>{url}</code>
-        <button className="boton boton-primario boton-mini" type="button" onClick={() => void copiar()}>
-          {copiado && <Icono nombre="marca" tamano={15} grosor={2.6} />}
-          <span>{copiado ? 'Copiado' : 'Copiar'}</span>
-        </button>
-      </div>
-      <div className="pie-ventana">
-        <button className="boton boton-fantasma" type="button" onClick={alCerrar}>
-          Listo
         </button>
       </div>
     </Dialogo>

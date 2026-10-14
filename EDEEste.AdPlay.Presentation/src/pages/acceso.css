@@ -310,6 +310,29 @@
   border-color: var(--peligro);
 }
 
+/* Dato fijo (el correo de una invitación): se ve como campo, pero no se edita. */
+.acceso .campo-input[readonly] {
+  background: var(--pista);
+  color: var(--texto);
+  cursor: default;
+}
+
+.acceso .campo-input[readonly]:focus {
+  border-color: var(--input-borde);
+  box-shadow: none;
+}
+
+.acceso .candado-campo {
+  position: absolute;
+  top: 0;
+  right: 14px;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  color: var(--pizarra);
+  pointer-events: none;
+}
+
 .acceso .boton-ojo {
   border-radius: 0 12px 12px 0;
   transition: color .2s;
@@ -343,6 +366,12 @@
   text-decoration: none;
   box-shadow: var(--sombra-boton);
   transition: background .25s, transform .15s, box-shadow .25s, opacity .25s;
+}
+
+/* Un enlace con forma de botón conserva el color del botón, no el de los enlaces de la página. */
+.acceso a.boton-acceso,
+.acceso a.boton-acceso:hover {
+  color: var(--sobre-primario);
 }
 
 .boton-acceso:hover:not(:disabled) {

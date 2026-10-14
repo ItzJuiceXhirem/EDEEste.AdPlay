@@ -12,6 +12,8 @@ export type AccionAuditoria =
   | 'IniciarSesion' | 'InicioSesionFallido' | 'Crear' | 'Editar' | 'Habilitar' | 'Deshabilitar'
   | 'Eliminar' | 'Archivar' | 'Restaurar' | 'Publicar' | 'Retirar' | 'Exportar'
   | 'GenerarToken' | 'RevocarToken' | 'CambiarClave' | 'RestablecerClave' | 'CambiarFoto'
+  | 'Invitar' | 'RevocarInvitacion' | 'ActivarCuenta'
+export type EstadoInvitacion = 'Pendiente' | 'Vencida' | 'Activada' | 'Revocada'
 
 export interface Sucursal {
   id: number
@@ -303,6 +305,39 @@ export interface CrearUsuario {
   nombreCompleto: string
   rol: Rol
   clave: string
+}
+
+export interface CrearInvitacion {
+  correo: string
+  nombreCompleto: string
+  rol: Rol
+}
+
+export interface Invitacion {
+  id: number
+  correo: string
+  nombreCompleto: string
+  rol: Rol
+  estado: EstadoInvitacion
+  fechaCreacionUtc: string
+  venceUtc: string
+  /** Quién la creó; nulo si su cuenta ya no existe. */
+  invitador: string | null
+}
+
+export interface InvitacionCreada {
+  invitacion: Invitacion
+  /** Se entrega una sola vez; con él se arma el enlace de activación. */
+  token: string
+}
+
+/** Lo que ve la persona invitada antes de activar su cuenta. */
+export interface InvitacionPublica {
+  correo: string
+  nombreCompleto: string
+  rol: Rol
+  invitador: string | null
+  venceUtc: string
 }
 
 export interface ActualizarUsuario {

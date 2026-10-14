@@ -1839,6 +1839,27 @@ select.control {
   }
 }
 
+/* Enlace de un solo uso (pantalla, invitación) con su botón de copiar. */
+.enlace-caja {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px 6px 14px;
+  border-radius: 12px;
+  background: var(--hundida);
+  border: 1px solid var(--borde);
+}
+
+.enlace-caja code {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 500 12.5px/18px var(--fuente-mono);
+  color: var(--titulo);
+}
+
 /* Barra de progreso indeterminada (paquetes ZIP en generación). */
 .barra-indeterminada {
   position: relative;

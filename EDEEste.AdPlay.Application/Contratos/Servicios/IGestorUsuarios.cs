@@ -36,6 +36,9 @@ namespace EDEEste.AdPlay.Application.Contratos.Servicios
         Task<IReadOnlyList<UsuarioInfo>> ListarAsync(CancellationToken ct = default);
         Task<int> ContarAdministradoresActivosAsync(CancellationToken ct = default);
 
+        /// <summary>Indica si ya hay una cuenta con ese correo (sin distinguir mayúsculas).</summary>
+        Task<bool> ExisteCorreoAsync(string correo, CancellationToken ct = default);
+
         /// <summary>Indica si ya hay al menos un usuario (activo o no).</summary>
         Task<bool> ExistenUsuariosAsync(CancellationToken ct = default);
 

@@ -283,26 +283,6 @@
   transition: width 1s linear;
 }
 
-.enlace-caja {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 6px 6px 14px;
-  border-radius: 12px;
-  background: var(--hundida);
-  border: 1px solid var(--borde);
-}
-
-.enlace-caja code {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font: 500 12.5px/18px var(--fuente-mono);
-  color: var(--titulo);
-}
-
 @keyframes barrido {
   0% {
     background-position: 120% 0;

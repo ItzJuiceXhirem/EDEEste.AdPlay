@@ -81,6 +81,9 @@ namespace EDEEste.AdPlay.Infrastructure.Identidad
             return filas.Select(f => ADto(f.Usuario, f.Rol ?? string.Empty)).ToList();
         }
 
+        public async Task<bool> ExisteCorreoAsync(string correo, CancellationToken ct = default) =>
+            await _usuarios.FindByEmailAsync(correo) is not null;
+
         public Task<bool> ExistenUsuariosAsync(CancellationToken ct = default) =>
             _contexto.Users.AnyAsync(ct);
 

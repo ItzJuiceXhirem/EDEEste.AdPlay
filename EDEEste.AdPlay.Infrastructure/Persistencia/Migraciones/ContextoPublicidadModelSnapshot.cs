@@ -395,6 +395,71 @@ namespace EDEEste.AdPlay.Infrastructure.Persistencia.Migraciones
                     b.ToTable("GruposPantallas", (string)null);
                 });
 
+            modelBuilder.Entity("EDEEste.AdPlay.Domain.Entities.Invitacion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Correo")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime?>("FechaActivacionUtc")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<DateTime>("FechaCreacionUtc")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<DateTime?>("FechaRevocacionUtc")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<string>("NombreCompleto")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Rol")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nchar(64)")
+                        .IsFixedLength();
+
+                    b.Property<int?>("UsuarioActivadoId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UsuarioCreadorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("VenceUtc")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Correo");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("UsuarioActivadoId");
+
+                    b.HasIndex("UsuarioCreadorId");
+
+                    b.ToTable("Invitaciones", (string)null);
+                });
+
             modelBuilder.Entity("EDEEste.AdPlay.Domain.Entities.ListaReproduccion", b =>
                 {
                     b.Property<int>("Id")
@@ -1041,6 +1106,19 @@ namespace EDEEste.AdPlay.Infrastructure.Persistencia.Migraciones
                     b.Navigation("GrupoPadre");
 
                     b.Navigation("Sucursal");
+                });
+
+            modelBuilder.Entity("EDEEste.AdPlay.Domain.Entities.Invitacion", b =>
+                {
+                    b.HasOne("EDEEste.AdPlay.Infrastructure.Identidad.UsuarioAplicacion", null)
+                        .WithMany()
+                        .HasForeignKey("UsuarioActivadoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("EDEEste.AdPlay.Infrastructure.Identidad.UsuarioAplicacion", null)
+                        .WithMany()
+                        .HasForeignKey("UsuarioCreadorId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("EDEEste.AdPlay.Domain.Entities.ListaReproduccion", b =>

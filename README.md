@@ -169,6 +169,12 @@ npm run lint --prefix EDEEste.AdPlay.Presentation
   de esas páginas con los mismos filtros que los listados.
 - **Panel:** tema claro y oscuro (se guarda en el navegador, clave `adplay-tema`) con fuentes Charis SIL y Sansation.
   La migración `PanelNuevo` agrega las columnas de la foto de perfil y de la reproducción en curso.
+- **Invitaciones:** desde Usuarios, un administrador invita a una persona con su correo y su rol
+  (`POST /api/invitaciones`) y recibe un enlace `/activar?token=…` para compartirlo; con él la persona elige su
+  contraseña y queda con la sesión iniciada (`POST /api/auth/invitacion` para consultarla y `POST /api/auth/activar`
+  para activarla, ambos sin sesión y con límite de intentos). El enlace sirve una vez, vence a los 7 días y se guarda
+  solo su hash; invitar de nuevo al mismo correo anula el enlace anterior, y `DELETE /api/invitaciones/{id}` lo anula
+  a mano. También se puede seguir creando la cuenta con una contraseña inicial. Migración `Invitaciones`.
 
 ## Pendiente
 
@@ -180,6 +186,7 @@ npm run lint --prefix EDEEste.AdPlay.Presentation
 - **Historial técnico de estados de pantalla** (`HistorialEstadoPantalla`), opcional en el documento.
 - **Control de concurrencia en la edición:** si dos usuarios editan la misma lista, gana el último en guardar.
 - **Exportación del paquete en segundo plano:** hoy se genera dentro de la petición HTTP.
-- **Cuentas:** recuperación de contraseña por correo y autenticación en dos pasos.
+- **Cuentas:** envío automático de las invitaciones por correo (hoy el administrador comparte el enlace),
+  recuperación de contraseña por correo y autenticación en dos pasos.
 - Ancho y alto de las imágenes no se calculan al subirlas.
 - Pruebas de los casos de uso con repositorios simulados y pruebas de integración de la API.

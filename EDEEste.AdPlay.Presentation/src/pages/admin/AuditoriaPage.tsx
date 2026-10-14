@@ -29,6 +29,9 @@ const ACCIONES: [AccionAuditoria, string][] = [
   ['CambiarClave', 'Cambiar contraseña'],
   ['RestablecerClave', 'Restablecer contraseña'],
   ['CambiarFoto', 'Cambiar foto de perfil'],
+  ['Invitar', 'Invitar'],
+  ['RevocarInvitacion', 'Anular invitación'],
+  ['ActivarCuenta', 'Activar cuenta'],
 ]
 const TEXTO_ACCION = new Map(ACCIONES)
 
@@ -47,6 +50,7 @@ const TIPOS: Record<string, string> = {
   AsignacionLista: 'Asignación',
   PublicacionLista: 'Publicación',
   Exportacion: 'Paquete ZIP',
+  Invitacion: 'Invitación',
 }
 
 const FILTROS_VACIOS = { desde: '', hasta: '', usuario: '', accion: '' as AccionAuditoria | '', tipo: '' }

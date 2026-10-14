@@ -1,4 +1,14 @@
-import type { ActualizarUsuario, CrearUsuario, RespuestaTokens, Sesion, Usuario } from '../types/api'
+import type {
+  ActualizarUsuario,
+  CrearInvitacion,
+  CrearUsuario,
+  Invitacion,
+  InvitacionCreada,
+  InvitacionPublica,
+  RespuestaTokens,
+  Sesion,
+  Usuario,
+} from '../types/api'
 import { api, solicitar } from './clienteApi'
 
 export const sesionApi = {
@@ -19,6 +29,18 @@ export const sesionApi = {
     return solicitar<{ fotoVersion: string }>('/auth/foto', { method: 'PUT', body: formulario }).then((r) => r.fotoVersion)
   },
   quitarFoto: () => api.delete('/auth/foto'),
+  /** Datos de la invitación del enlace; falla con 404 si venció, ya se usó o fue anulada. */
+  consultarInvitacion: (token: string) => api.post<InvitacionPublica>('/auth/invitacion', { token }, { conSesion: false }),
+  activarCuenta: (token: string, nombreCompleto: string, clave: string) =>
+    api.post<RespuestaTokens>('/auth/activar', { token, nombreCompleto, clave }, { conSesion: false }),
+}
+
+export const invitacionesApi = {
+  listar: () => api.get<Invitacion[]>('/invitaciones'),
+  crear: (dto: CrearInvitacion) => api.post<InvitacionCreada>('/invitaciones', dto),
+  revocar: (id: number) => api.delete(`/invitaciones/${id}`),
+  /** Enlace que se comparte con la persona invitada. */
+  enlace: (token: string) => `${window.location.origin}/activar?token=${encodeURIComponent(token)}`,
 }
 
 export const usuariosApi = {

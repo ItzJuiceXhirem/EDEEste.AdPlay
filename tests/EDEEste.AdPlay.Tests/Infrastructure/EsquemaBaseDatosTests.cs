@@ -58,6 +58,8 @@ namespace EDEEste.AdPlay.Tests.Infrastructure
                 (typeof(PublicacionLista), nameof(PublicacionLista.UsuarioPublicadorId)),
                 (typeof(Exportacion), nameof(Exportacion.UsuarioSolicitanteId)),
                 (typeof(RegistroAuditoria), nameof(RegistroAuditoria.UsuarioId)),
+                (typeof(Invitacion), nameof(Invitacion.UsuarioCreadorId)),
+                (typeof(Invitacion), nameof(Invitacion.UsuarioActivadoId)),
             };
 
             foreach (var (entidad, propiedad) in esperados)

@@ -30,6 +30,7 @@ namespace EDEEste.AdPlay.Infrastructure.Persistencia
         public DbSet<ElementoPublicacion> ElementosPublicacion => Set<ElementoPublicacion>();
         public DbSet<Exportacion> Exportaciones => Set<Exportacion>();
         public DbSet<RegistroAuditoria> RegistrosAuditoria => Set<RegistroAuditoria>();
+        public DbSet<Invitacion> Invitaciones => Set<Invitacion>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -88,6 +89,8 @@ namespace EDEEste.AdPlay.Infrastructure.Persistencia
             Relacionar<PublicacionLista>(builder, e => e.UsuarioPublicadorId);
             Relacionar<Exportacion>(builder, e => e.UsuarioSolicitanteId);
             Relacionar<RegistroAuditoria>(builder, e => e.UsuarioId);
+            Relacionar<Invitacion>(builder, e => e.UsuarioCreadorId);
+            Relacionar<Invitacion>(builder, e => e.UsuarioActivadoId);
         }
 
         private static void Relacionar<TEntidad>(ModelBuilder builder, Expression<Func<TEntidad, object?>> usuarioId)

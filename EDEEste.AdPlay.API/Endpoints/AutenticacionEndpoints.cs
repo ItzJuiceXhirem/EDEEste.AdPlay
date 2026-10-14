@@ -77,7 +77,7 @@ namespace EDEEste.AdPlay.API.Endpoints
             return rutas;
         }
 
-        private static ClaimsPrincipal CrearPrincipal(SesionDto sesion)
+        internal static ClaimsPrincipal CrearPrincipal(SesionDto sesion)
         {
             var identidad = new ClaimsIdentity(BearerTokenDefaults.AuthenticationScheme);
             identidad.AddClaim(new Claim(ClaimTypes.NameIdentifier, sesion.Id.ToString()));
