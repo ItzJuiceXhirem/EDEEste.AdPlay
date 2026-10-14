@@ -4,9 +4,13 @@ Sistema de gestión y reproducción de anuncios digitales para las pantallas de 
 aplicación web; las pantallas reproducen desde el navegador o con un paquete ZIP para el reproductor local.
 
 La guía de diseño original es `EDEEste.AdPlay_Guia_Arquitectura.pdf`. Este archivo resume cómo está organizado el
-código y cómo trabajar con él.
+código (o al menos su diseño base, ya que actualmente es más grande) y cómo trabajar con él. Para información
+actualizada, revisar la guía `EDEEste.AdPlay_Documento_de_Traspaso.pdf` en la carpeta `docs/`. Ahí mismo se encuentra
+el manual de usuario.
 
 - Stitch para inspiración sobre el diseño: https://stitch.google.com/projects/10326607302982085645
+- Fuentes: Charis SIL (https://fonts.google.com/specimen/Charis+SIL?categoryFilters=Feeling:%2FExpressive%2FBusiness)
+  y Sansation (https://fonts.google.com/specimen/Sansation?categoryFilters=Feeling:%2FExpressive%2FBusiness)
 
 ## Arquitectura
 
