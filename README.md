@@ -6,6 +6,8 @@ aplicación web; las pantallas reproducen desde el navegador o con un paquete ZI
 La guía de diseño original es `EDEEste.AdPlay_Guia_Arquitectura.pdf`. Este archivo resume cómo está organizado el
 código y cómo trabajar con él.
 
+- Stitch para inspiración sobre el diseño: https://stitch.google.com/projects/10326607302982085645
+
 ## Arquitectura
 
 Clean Architecture / Onion: las dependencias apuntan hacia el centro.
