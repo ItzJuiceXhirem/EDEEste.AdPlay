@@ -46,7 +46,7 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Usuarios
             {
                 _auditoria.Registrar(AccionAuditoria.IniciarSesion, TipoEntidadUsuario, usuario.Id, usuarioId: usuario.Id);
                 await _unidadDeTrabajo.GuardarCambiosAsync(ct);
-                return new SesionDto(usuario.Id, usuario.Correo, usuario.NombreCompleto, usuario.Rol);
+                return usuario.ASesionDto();
             }
 
             _auditoria.Registrar(
@@ -93,7 +93,7 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Usuarios
                 _auditoria.Registrar(
                     AccionAuditoria.Crear, TipoEntidadUsuario, usuario.Id, "Registro inicial del primer administrador", usuario.Id);
                 await _unidadDeTrabajo.GuardarCambiosAsync(ct);
-                return new SesionDto(usuario.Id, usuario.Correo, usuario.NombreCompleto, usuario.Rol);
+                return usuario.ASesionDto();
             }
             finally
             {
@@ -106,7 +106,7 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Usuarios
         {
             var usuario = await _gestor.ObtenerAsync(usuarioId, ct);
             return usuario is { EstaActivo: true }
-                ? new SesionDto(usuario.Id, usuario.Correo, usuario.NombreCompleto, usuario.Rol)
+                ? usuario.ASesionDto()
                 : null;
         }
     }

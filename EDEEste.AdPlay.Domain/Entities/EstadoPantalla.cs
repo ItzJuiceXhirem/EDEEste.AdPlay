@@ -10,6 +10,14 @@ namespace EDEEste.AdPlay.Domain.Entities
         public string? UltimaVersionReportada { get; set; }
         public string? UltimoError { get; set; }
 
+        /// <summary>Posición, dentro de la versión reportada, del anuncio que se mostraba al enviar el último latido.</summary>
+        public int? PosicionReproduccion { get; set; }
+
+        public int? AnuncioReproduccionId { get; set; }
+
+        /// <summary>Segundos que llevaba ese anuncio en pantalla al enviar el último latido.</summary>
+        public int? SegundoReproduccion { get; set; }
+
         public Pantalla Pantalla { get; set; } = null!;
     }
 }

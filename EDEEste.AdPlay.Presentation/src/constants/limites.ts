@@ -21,3 +21,16 @@ export const ZONA_HORARIA_PREDETERMINADA = 'America/Santo_Domingo'
 
 /** Debe coincidir con los formatos de ValidadorArchivosMultimedia en la API. */
 export const FORMATOS_MULTIMEDIA = '.jpg,.jpeg,.png,.webp,.mp4,.webm'
+
+/** Formatos aceptados por extensión; coincide con ValidadorArchivosMultimedia en la API. */
+export const FORMATOS_POR_EXTENSION: Record<string, { tipo: 'Imagen' | 'Video'; mime: string }> = {
+  jpg: { tipo: 'Imagen', mime: 'image/jpeg' },
+  jpeg: { tipo: 'Imagen', mime: 'image/jpeg' },
+  png: { tipo: 'Imagen', mime: 'image/png' },
+  webp: { tipo: 'Imagen', mime: 'image/webp' },
+  mp4: { tipo: 'Video', mime: 'video/mp4' },
+  webm: { tipo: 'Video', mime: 'video/webm' },
+}
+
+/** Tamaños máximos predeterminados de la API (Multimedia:TamanoMaximoImagenMb / TamanoMaximoVideoMb). */
+export const TAMANO_MAXIMO_MB = { Imagen: 20, Video: 500, FotoPerfil: 2 } as const

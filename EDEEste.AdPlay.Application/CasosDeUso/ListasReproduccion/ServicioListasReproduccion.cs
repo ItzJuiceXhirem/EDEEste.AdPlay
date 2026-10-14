@@ -13,6 +13,7 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.ListasReproduccion
     {
         private readonly IRepositorioListas _listas;
         private readonly IRepositorioAnuncios _anuncios;
+        private readonly IRepositorioPublicaciones _publicaciones;
         private readonly IUnidadDeTrabajo _unidadDeTrabajo;
         private readonly IRegistroAuditoria _auditoria;
         private readonly IUsuarioActual _usuarioActual;
@@ -21,6 +22,7 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.ListasReproduccion
         public ServicioListasReproduccion(
             IRepositorioListas listas,
             IRepositorioAnuncios anuncios,
+            IRepositorioPublicaciones publicaciones,
             IUnidadDeTrabajo unidadDeTrabajo,
             IRegistroAuditoria auditoria,
             IUsuarioActual usuarioActual,
@@ -28,14 +30,20 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.ListasReproduccion
         {
             _listas = listas;
             _anuncios = anuncios;
+            _publicaciones = publicaciones;
             _unidadDeTrabajo = unidadDeTrabajo;
             _auditoria = auditoria;
             _usuarioActual = usuarioActual;
             _reloj = reloj;
         }
 
-        public async Task<IReadOnlyList<ListaReproduccionResumenDto>> ListarAsync(CancellationToken ct = default) =>
-            (await _listas.ListarAsync(ct)).Select(l => l.AResumenDto()).ToList();
+        public async Task<IReadOnlyList<ListaReproduccionResumenDto>> ListarAsync(CancellationToken ct = default)
+        {
+            var listas = await _listas.ListarAsync(ct);
+            var versiones = (await _publicaciones.ListarUltimasPublicadasAsync(listas.Select(l => l.Id), ct))
+                .ToDictionary(p => p.ListaReproduccionId, p => p.NumeroVersion);
+            return listas.Select(l => l.AResumenDto(versiones.TryGetValue(l.Id, out var v) ? v : null)).ToList();
+        }
 
         public async Task<ListaReproduccionDto> ObtenerAsync(int id, CancellationToken ct = default) =>
             (await ObtenerEntidadAsync(id, ct)).ADto();

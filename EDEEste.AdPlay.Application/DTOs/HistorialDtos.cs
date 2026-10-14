@@ -25,4 +25,16 @@ namespace EDEEste.AdPlay.Application.DTOs
         DateTime? FechaFinalizacionUtc,
         string? UsuarioSolicitante,
         string? DetalleError);
+
+    /// <summary>Totales del historial que cumple el filtro, sin paginar.</summary>
+    /// <param name="BytesPaquetes">Suma del tamaño de los paquetes generados con éxito.</param>
+    public sealed record ResumenHistorialDto(
+        int Publicaciones,
+        int PublicacionesRetiradas,
+        DateTime? UltimaPublicacionUtc,
+        string? UltimaPublicacionLista,
+        int? UltimaPublicacionVersion,
+        int Exportaciones,
+        int ExportacionesCompletadas,
+        long BytesPaquetes);
 }

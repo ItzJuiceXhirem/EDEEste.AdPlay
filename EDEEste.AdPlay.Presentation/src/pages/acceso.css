@@ -1,0 +1,573 @@
+/* Inicio de sesión y registro inicial: tarjeta de vidrio sobre un degradado que se mueve. */
+
+.claro .acceso {
+  --primario: #8b4c50;
+  --primario-hover: #723c40;
+  --sobre-primario: #ffffff;
+  --sombra-boton: 0 6px 16px -4px rgba(139, 76, 80, .45);
+  --sombra-boton-hover: 0 10px 22px -6px rgba(139, 76, 80, .55);
+  --vidrio: rgba(255, 255, 255, .72);
+  --vidrio-borde: rgba(255, 255, 255, .55);
+  --vidrio-sombra: 0 25px 50px -12px rgba(110, 46, 56, .18);
+  --pildora: rgba(255, 255, 255, .58);
+  --pildora-borde: rgba(255, 255, 255, .45);
+  --input: rgba(255, 255, 255, .85);
+  --input-foco: rgba(255, 255, 255, .98);
+  --input-borde: rgba(255, 255, 255, .6);
+  --anillo: rgba(139, 76, 80, .18);
+  --separador: rgba(133, 115, 115, .25);
+  --pie: #4a2a30;
+  --peligro: #93000a;
+  --peligro-fondo: rgba(255, 218, 214, .9);
+  --ayuda-fondo: rgba(255, 241, 237, .95);
+  --aviso-fondo: rgba(255, 248, 214, .92);
+  --aviso-borde: #FFD100;
+  --pista: rgba(109, 104, 117, .16);
+  --requisito: rgba(109, 104, 117, .35);
+}
+
+.oscuro .acceso {
+  --primario: #E5989B;
+  --primario-hover: #efb0b2;
+  --sobre-primario: #2D2730;
+  --sombra-boton: 0 4px 16px rgba(229, 152, 155, .32);
+  --sombra-boton-hover: 0 8px 24px rgba(229, 152, 155, .45);
+  --vidrio: rgba(21, 27, 39, .8);
+  --vidrio-borde: rgba(255, 255, 255, .08);
+  --vidrio-sombra: 0 25px 60px -12px rgba(0, 0, 0, .6);
+  --pildora: rgba(23, 28, 38, .7);
+  --pildora-borde: rgba(255, 255, 255, .08);
+  --input: rgba(9, 14, 24, .6);
+  --input-foco: rgba(9, 14, 24, .85);
+  --input-borde: #2c364c;
+  --anillo: rgba(229, 152, 155, .3);
+  --separador: rgba(255, 255, 255, .08);
+  --pie: rgba(222, 226, 241, .72);
+  --peligro: #ffb4ab;
+  --peligro-fondo: rgba(147, 0, 10, .32);
+  --ayuda-fondo: rgba(255, 255, 255, .05);
+  --aviso-fondo: rgba(255, 209, 0, .08);
+  --aviso-borde: rgba(255, 209, 0, .5);
+  --pista: rgba(255, 255, 255, .08);
+  --requisito: rgba(255, 255, 255, .22);
+}
+
+.acceso {
+  position: relative;
+  min-height: 100vh;
+  /* clip y no hidden: las manchas sobresalen y un contenedor hidden se puede desplazar (por ejemplo, al enfocar un campo). */
+  overflow: clip;
+  display: flex;
+  flex-direction: column;
+  color: var(--texto);
+}
+
+.acceso a {
+  color: var(--primario);
+  transition: color .2s;
+}
+
+.acceso a:hover {
+  color: var(--primario-hover);
+}
+
+.acceso .capa {
+  position: absolute;
+  inset: 0;
+  transition: opacity .8s ease;
+  pointer-events: none;
+}
+
+.acceso .capa-clara {
+  background: radial-gradient(circle at 18% 22%, #ffd6c0 0%, #ffb4a2 32%, #e5989b 68%, #b5838d 100%);
+}
+
+.acceso .capa-oscura {
+  background: radial-gradient(circle at 18% 22%, #2b3852 0%, #18202f 34%, #0e131d 68%, #090e18 100%);
+  opacity: 0;
+}
+
+.oscuro .acceso .capa-oscura {
+  opacity: 1;
+}
+
+.acceso.registro .capa-clara {
+  background: radial-gradient(circle at 82% 20%, #ffd6c0 0%, #ffb4a2 30%, #e5989b 66%, #b5838d 100%);
+}
+
+.acceso.registro .capa-oscura {
+  background: radial-gradient(circle at 82% 20%, #2b3852 0%, #18202f 34%, #0e131d 68%, #090e18 100%);
+}
+
+.acceso .mancha {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(64px);
+  pointer-events: none;
+  transition: background .8s ease;
+}
+
+.acceso .mancha-1 {
+  top: -10vw;
+  left: -8vw;
+  width: 45vw;
+  height: 45vw;
+  background: rgba(255, 255, 255, .25);
+  animation: deriva1 22s ease-in-out infinite;
+}
+
+.acceso .mancha-2 {
+  bottom: -12vw;
+  right: -10vw;
+  width: 50vw;
+  height: 50vw;
+  background: rgba(139, 76, 80, .15);
+  animation: deriva2 26s ease-in-out infinite;
+}
+
+.acceso .mancha-3 {
+  top: 45%;
+  right: 10%;
+  width: 25vw;
+  height: 25vw;
+  background: rgba(255, 224, 127, .2);
+  animation: deriva3 18s ease-in-out infinite;
+}
+
+.acceso.registro .mancha-1 {
+  left: auto;
+  right: -8vw;
+  top: -12vw;
+}
+
+.acceso.registro .mancha-2 {
+  right: auto;
+  left: -10vw;
+  bottom: -14vw;
+}
+
+.acceso.registro .mancha-3 {
+  right: auto;
+  left: 12%;
+  top: 40%;
+}
+
+.oscuro .acceso .mancha-1 {
+  background: rgba(229, 152, 155, .13);
+}
+
+.oscuro .acceso .mancha-2 {
+  background: rgba(255, 180, 162, .08);
+}
+
+.oscuro .acceso .mancha-3 {
+  background: rgba(255, 209, 0, .07);
+}
+
+.acceso-cabecera {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 32px 40px 0;
+}
+
+.acceso .pildora {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  border-radius: 9999px;
+  background: var(--pildora);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--pildora-borde);
+  box-shadow: 0 8px 24px -4px rgba(139, 76, 80, .12);
+  transition: background .5s, border-color .5s;
+  animation: aparecer-arriba .6s ease both;
+}
+
+.acceso .punto {
+  width: 8px;
+  height: 8px;
+}
+
+.acceso .punto-centro {
+  width: 8px;
+  height: 8px;
+}
+
+.acceso .punto-onda {
+  animation: onda 1.8s cubic-bezier(0, 0, .2, 1) infinite;
+}
+
+.acceso-principal {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 24px 16px 0;
+}
+
+.acceso .vidrio {
+  width: 100%;
+  max-width: 430px;
+  /* Más alto que su contenido, sin tapar la barra superior ni el logo; el contenido va algo por encima del centro. */
+  min-height: min(700px, calc(100vh - 190px));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 28px 28px 0 0;
+  padding: 28px 36px 96px;
+  background: var(--vidrio);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--vidrio-borde);
+  border-bottom: 0;
+  box-shadow: var(--vidrio-sombra);
+  transition: background .5s, border-color .5s, box-shadow .5s;
+  animation: subir-difuso .9s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.acceso .vidrio.sacudir {
+  animation: sacudir .5s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+.acceso .paso {
+  animation: subir-difuso .7s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.acceso .paso-1 { animation-delay: .12s; }
+.acceso .paso-2 { animation-delay: .18s; }
+.acceso .paso-3 { animation-delay: .24s; }
+.acceso .paso-4 { animation-delay: .3s; }
+.acceso .paso-5 { animation-delay: .36s; }
+.acceso .paso-6 { animation-delay: .42s; }
+.acceso .paso-7 { animation-delay: .48s; }
+.acceso .paso-8 { animation-delay: .54s; }
+
+.acceso .aparecer {
+  animation: aparecer-arriba .5s ease both;
+}
+
+.acceso .etiqueta {
+  display: block;
+}
+
+.acceso .campo-caja {
+  position: relative;
+}
+
+.acceso .campo-icono {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  color: var(--malva);
+  pointer-events: none;
+  transition: color .2s;
+}
+
+.acceso .campo-caja:focus-within .campo-icono {
+  color: var(--primario);
+}
+
+.acceso .campo-input {
+  display: block;
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--input-borde);
+  background: var(--input);
+  backdrop-filter: blur(8px);
+  padding: 0 44px 0 42px;
+  font: 400 14px/20px var(--fuente);
+  color: var(--titulo);
+  outline: none;
+  transition: background .2s, box-shadow .2s, border-color .2s;
+}
+
+.acceso .campo-input::placeholder {
+  color: var(--pizarra);
+  opacity: .75;
+}
+
+.acceso .campo-input:focus {
+  background: var(--input-foco);
+  border-color: var(--primario);
+  box-shadow: 0 0 0 3px var(--anillo);
+}
+
+.acceso .campo-input.invalido {
+  border-color: var(--peligro);
+}
+
+.acceso .boton-ojo {
+  border-radius: 0 12px 12px 0;
+  transition: color .2s;
+}
+
+.acceso .boton-ojo:focus-visible {
+  outline: 2px solid var(--primario);
+  outline-offset: -4px;
+}
+
+.acceso .marca-campo {
+  color: var(--primario);
+}
+
+.boton-acceso {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--primario);
+  color: var(--sobre-primario);
+  font: 700 14px/20px var(--fuente);
+  letter-spacing: .02em;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: var(--sombra-boton);
+  transition: background .25s, transform .15s, box-shadow .25s, opacity .25s;
+}
+
+.boton-acceso:hover:not(:disabled) {
+  background: var(--primario-hover);
+  color: var(--sobre-primario);
+  box-shadow: var(--sombra-boton-hover);
+  transform: translateY(-1px);
+}
+
+.boton-acceso:active:not(:disabled) {
+  transform: scale(.99);
+}
+
+.boton-acceso:focus-visible {
+  outline: 3px solid var(--anillo);
+  outline-offset: 2px;
+}
+
+.boton-acceso::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .28), transparent);
+  transform: skewX(-18deg);
+  transition: left .6s ease;
+}
+
+.boton-acceso:hover:not(:disabled)::after {
+  left: 120%;
+}
+
+.boton-acceso:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+  box-shadow: none;
+}
+
+.boton-acceso.ocupado:disabled {
+  cursor: progress;
+  opacity: .9;
+}
+
+.boton-acceso .flecha {
+  transition: transform .25s;
+}
+
+.boton-acceso:hover .flecha {
+  transform: translateX(3px);
+}
+
+.boton-tema-acceso {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--titulo);
+  padding: 0;
+  transition: transform .3s, background .5s;
+}
+
+.boton-tema-acceso:hover {
+  transform: rotate(-14deg) scale(1.05);
+}
+
+.boton-tema-acceso:focus-visible {
+  outline: 2px solid var(--primario);
+  outline-offset: 2px;
+}
+
+.acceso .enlace-texto {
+  font: 700 11px/14px var(--fuente);
+  padding: 0;
+  text-underline-offset: 2px;
+}
+
+.acceso .logo {
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1);
+}
+
+.acceso .logo:hover {
+  transform: scale(1.05);
+}
+
+.acceso .flotar {
+  animation: subir-difuso .7s .12s cubic-bezier(.2, .8, .2, 1) both, flotar-logo 6s .9s ease-in-out infinite;
+}
+
+.acceso .requisito-marca {
+  border-color: var(--requisito);
+}
+
+.acceso .requisito.cumple .requisito-marca {
+  background: var(--primario);
+  border-color: var(--primario);
+  color: var(--sobre-primario);
+}
+
+.acceso .barra {
+  background: var(--pista);
+}
+
+.acceso .circulo-exito {
+  width: 76px;
+  height: 76px;
+  border-radius: 9999px;
+  background: var(--primario);
+  color: var(--sobre-primario);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 28px -8px rgba(139, 76, 80, .55);
+  margin-bottom: 22px;
+  animation: latido .7s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.acceso-pie {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 40px;
+  font-size: 12px;
+  color: var(--pie);
+  pointer-events: none;
+}
+
+.dos-columnas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@keyframes subir-difuso {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes aparecer-arriba {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes flotar-logo {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes deriva1 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(4vw, 3vw) scale(1.08);
+  }
+}
+
+@keyframes deriva2 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(-5vw, -3vw) scale(1.06);
+  }
+}
+
+@keyframes deriva3 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-3vw, 4vw);
+  }
+}
+
+@media (max-width: 640px) {
+  .acceso .solo-ancho {
+    display: none !important;
+  }
+
+  .acceso-cabecera {
+    padding: 20px 16px 0;
+  }
+
+  .acceso .vidrio {
+    padding: 28px 22px 36px;
+  }
+
+  .dos-columnas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

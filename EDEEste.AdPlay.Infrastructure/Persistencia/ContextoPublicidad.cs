@@ -65,6 +65,8 @@ namespace EDEEste.AdPlay.Infrastructure.Persistencia
             {
                 e.ToTable("Usuarios");
                 e.Property(u => u.NombreCompleto).HasMaxLength(LongitudesMaximas.NombreCompleto).IsRequired();
+                e.Property(u => u.FotoClaveAlmacenamiento).HasMaxLength(LongitudesMaximas.ClaveAlmacenamiento);
+                e.Property(u => u.FotoTipoMime).HasMaxLength(LongitudesMaximas.TipoMime);
             });
             builder.Entity<RolAplicacion>().ToTable("Roles");
             builder.Entity<IdentityUserRole<int>>().ToTable("UsuariosRoles");

@@ -12,7 +12,11 @@ namespace EDEEste.AdPlay.Infrastructure.Repositorios
         }
 
         public async Task<IReadOnlyList<ListaReproduccion>> ListarAsync(CancellationToken ct = default) =>
-            await Conjunto.Include(l => l.Elementos).OrderBy(l => l.Nombre).ToListAsync(ct);
+            await Conjunto
+                .Include(l => l.Elementos).ThenInclude(e => e.Anuncio)
+                .OrderBy(l => l.Nombre)
+                .AsSplitQuery()
+                .ToListAsync(ct);
 
         public Task<ListaReproduccion?> ObtenerConElementosAsync(int id, CancellationToken ct = default) =>
             Conjunto

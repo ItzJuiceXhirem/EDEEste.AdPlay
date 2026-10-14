@@ -11,4 +11,7 @@ namespace EDEEste.AdPlay.Application.DTOs
         string TipoEntidad,
         int? EntidadId,
         string? Detalle);
+
+    /// <summary>Totales de los registros que cumplen el filtro, sin paginar.</summary>
+    public sealed record ResumenAuditoriaDto(int Total, int AccionesDeRiesgo, int IniciosSesionFallidos, int Personas);
 }

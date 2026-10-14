@@ -11,6 +11,8 @@ export interface ValorAuth {
   /** Crea al primer administrador y deja la sesión iniciada. Solo funciona mientras no haya usuarios. */
   registrarAdministradorInicial: (correo: string, nombreCompleto: string, clave: string) => Promise<void>
   cerrarSesion: () => void
+  /** Vuelve a leer la sesión (por ejemplo, tras cambiar la foto de perfil). */
+  refrescarSesion: () => Promise<void>
 }
 
 export const AuthContexto = createContext<ValorAuth | null>(null)

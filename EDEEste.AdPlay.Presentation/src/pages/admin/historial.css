@@ -1,0 +1,50 @@
+.tabla tr.fila.retirada td {
+  color: var(--pizarra);
+}
+
+.fecha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fecha-dia {
+  flex: none;
+  width: 44px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--sutil);
+  border: 1px solid var(--borde);
+}
+
+.fecha-dia strong {
+  font: 700 18px/20px var(--fuente);
+  color: var(--titulo);
+  font-variant-numeric: tabular-nums;
+}
+
+.fecha-dia span {
+  font: 700 10px/12px var(--fuente);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--coral);
+}
+
+.enlace-lista {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--titulo);
+  text-decoration: none;
+  font: 700 15px/20px var(--fuente-titulo);
+}
+
+.enlace-lista:hover {
+  color: var(--primario);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

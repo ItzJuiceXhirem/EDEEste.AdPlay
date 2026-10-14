@@ -39,10 +39,22 @@ export async function descargarMedio(token: string, archivoMultimediaId: number)
   return respuesta.blob()
 }
 
-export async function enviarLatido(token: string, versionReportada: string | null, error: string | null): Promise<void> {
+/** Anuncio que se está mostrando: posición en el manifiesto y segundo transcurrido desde que empezó. */
+export interface ReproduccionActual {
+  posicion: number
+  anuncioId: number
+  segundo: number
+}
+
+export async function enviarLatido(
+  token: string,
+  versionReportada: string | null,
+  error: string | null,
+  reproduccion: ReproduccionActual | null,
+): Promise<void> {
   await fetch(urlApi('/reproductor/latido'), {
     method: 'POST',
     headers: { [CABECERA_TOKEN]: token, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ versionReportada, error }),
+    body: JSON.stringify({ versionReportada, error, reproduccion }),
   })
 }

@@ -44,6 +44,10 @@ export function ProveedorAuth({ children }: { children: ReactNode }) {
     setSesion(null)
   }, [])
 
+  const refrescarSesion = useCallback(async () => {
+    setSesion(await sesionApi.obtenerSesion())
+  }, [])
+
   const valor = useMemo<ValorAuth>(
     () => ({
       sesion,
@@ -52,8 +56,9 @@ export function ProveedorAuth({ children }: { children: ReactNode }) {
       iniciarSesion,
       registrarAdministradorInicial,
       cerrarSesion,
+      refrescarSesion,
     }),
-    [sesion, cargando, iniciarSesion, registrarAdministradorInicial, cerrarSesion],
+    [sesion, cargando, iniciarSesion, registrarAdministradorInicial, cerrarSesion, refrescarSesion],
   )
 
   return <AuthContexto.Provider value={valor}>{children}</AuthContexto.Provider>

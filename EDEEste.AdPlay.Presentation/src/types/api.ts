@@ -11,7 +11,7 @@ export type Rol = 'Administrador' | 'Operador'
 export type AccionAuditoria =
   | 'IniciarSesion' | 'InicioSesionFallido' | 'Crear' | 'Editar' | 'Habilitar' | 'Deshabilitar'
   | 'Eliminar' | 'Archivar' | 'Restaurar' | 'Publicar' | 'Retirar' | 'Exportar'
-  | 'GenerarToken' | 'RevocarToken' | 'CambiarClave' | 'RestablecerClave'
+  | 'GenerarToken' | 'RevocarToken' | 'CambiarClave' | 'RestablecerClave' | 'CambiarFoto'
 
 export interface Sucursal {
   id: number
@@ -123,6 +123,10 @@ export interface ListaReproduccionResumen {
   cantidadElementos: number
   fechaCreacionUtc: string
   fechaActualizacionUtc: string | null
+  /** Suma de las duraciones efectivas de sus anuncios. */
+  duracionTotalSegundos: number
+  /** Número de la última versión publicada vigente; nulo si nunca se publicó o se retiró. */
+  ultimaVersionPublicada: number | null
 }
 
 export interface ElementoLista {
@@ -273,6 +277,9 @@ export interface Sesion {
   correo: string
   nombreCompleto: string
   rol: Rol
+  fechaCreacionUtc: string
+  /** Cambia con cada foto nueva; nula si no tiene foto. */
+  fotoVersion: string | null
 }
 
 export interface RespuestaTokens {
@@ -288,6 +295,7 @@ export interface Usuario {
   rol: Rol
   estaActivo: boolean
   fechaCreacionUtc: string
+  fotoVersion: string | null
 }
 
 export interface CrearUsuario {
@@ -365,4 +373,44 @@ export interface EstadoPantallaReporte {
   /** Nulo si no se puede saber (sin latidos, sin contenido esperado o en modo paquete local). */
   actualizada: boolean | null
   ultimoError: string | null
+  numeroVersionEsperada: number | null
+  /** Anuncios de la versión esperada, en orden de reproducción. */
+  elementosEsperados: ElementoReproduccion[]
+  /** Solo si está en línea y reproduce la versión esperada (la posición corresponde a elementosEsperados). */
+  reproduccion: ReproduccionReportada | null
+}
+
+export interface ElementoReproduccion {
+  posicion: number
+  anuncioId: number
+  titulo: string
+  archivoMultimediaId: number
+  tipoMultimedia: TipoMultimedia
+  duracionSegundos: number
+}
+
+/** Anuncio que la pantalla informó en su último latido; el panel estima el avance desde reportadaUtc. */
+export interface ReproduccionReportada {
+  posicion: number
+  anuncioId: number
+  segundo: number
+  reportadaUtc: string
+}
+
+export interface ResumenAuditoria {
+  total: number
+  accionesDeRiesgo: number
+  iniciosSesionFallidos: number
+  personas: number
+}
+
+export interface ResumenHistorial {
+  publicaciones: number
+  publicacionesRetiradas: number
+  ultimaPublicacionUtc: string | null
+  ultimaPublicacionLista: string | null
+  ultimaPublicacionVersion: number | null
+  exportaciones: number
+  exportacionesCompletadas: number
+  bytesPaquetes: number
 }

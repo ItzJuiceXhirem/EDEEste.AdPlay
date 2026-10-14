@@ -17,6 +17,7 @@ namespace EDEEste.AdPlay.Domain.Enums
         GenerarToken = 13,
         RevocarToken = 14,
         CambiarClave = 15,
-        RestablecerClave = 16
+        RestablecerClave = 16,
+        CambiarFoto = 17
     }
 }

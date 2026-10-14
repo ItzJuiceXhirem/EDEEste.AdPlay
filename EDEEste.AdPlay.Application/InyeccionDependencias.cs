@@ -35,6 +35,7 @@ namespace EDEEste.AdPlay.Application
 
             services.AddScoped<ServicioAutenticacion>();
             services.AddScoped<ServicioUsuarios>();
+            services.AddScoped<ServicioFotoPerfil>();
             services.AddScoped<ServicioAuditoria>();
             services.AddScoped<ServicioHistorial>();
             services.AddScoped<ServicioReportes>();

@@ -1,0 +1,34 @@
+.rol-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--borde);
+  background: var(--elevada);
+  box-shadow: var(--sombra-1);
+  animation: subir .6s cubic-bezier(.2, .8, .2, 1) both;
+  transition: transform .25s cubic-bezier(.2, .8, .2, 1), box-shadow .25s, border-color .25s, background-color .45s;
+}
+
+.rol-tarjeta:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sombra-2);
+  border-color: var(--durazno);
+}
+
+.iniciales.iniciales-grande {
+  width: 40px;
+  height: 40px;
+  font-size: 13px;
+  text-shadow: 0 1px 2px rgba(45, 39, 48, .35);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .3);
+}
+
+.tabla tr.fila.inactivo td {
+  opacity: .6;
+}
+
+.tabla tr.fila.nuevo {
+  animation: subir .45s cubic-bezier(.2, .8, .2, 1) both, destello-coral 2.2s ease .2s both;
+}

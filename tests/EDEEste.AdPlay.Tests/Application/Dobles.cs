@@ -48,6 +48,51 @@ namespace EDEEste.AdPlay.Tests.Application
 
         public Task<IReadOnlyDictionary<int, string>> ObtenerNombresAsync(IEnumerable<int> ids, CancellationToken ct = default) =>
             Task.FromResult<IReadOnlyDictionary<int, string>>(new Dictionary<int, string>());
+
+        public Dictionary<int, FotoPerfil> Fotos { get; } = [];
+
+        public Task<FotoPerfil?> ObtenerFotoAsync(int id, CancellationToken ct = default) =>
+            Task.FromResult(Fotos.GetValueOrDefault(id));
+
+        public Task<FotoPerfil?> ReemplazarFotoAsync(int id, FotoPerfil? nueva, CancellationToken ct = default)
+        {
+            var anterior = Fotos.GetValueOrDefault(id);
+            if (nueva is null)
+            {
+                Fotos.Remove(id);
+            }
+            else
+            {
+                Fotos[id] = nueva;
+            }
+
+            return Task.FromResult(anterior);
+        }
+    }
+
+    /// <summary>Almacenamiento en memoria: guarda el contenido por clave y permite comprobar qué se borró.</summary>
+    internal sealed class AlmacenamientoFalso : IAlmacenamientoMultimedia
+    {
+        public Dictionary<string, byte[]> Archivos { get; } = [];
+
+        public async Task<ResultadoAlmacenamiento> GuardarAsync(string clave, Stream contenido, CancellationToken ct = default)
+        {
+            using var memoria = new MemoryStream();
+            await contenido.CopyToAsync(memoria, ct);
+            Archivos[clave] = memoria.ToArray();
+            return new ResultadoAlmacenamiento(memoria.Length, "hash");
+        }
+
+        public Task<Stream> AbrirLecturaAsync(string clave, CancellationToken ct = default) =>
+            Task.FromResult<Stream>(new MemoryStream(Archivos[clave]));
+
+        public Task<bool> ExisteAsync(string clave, CancellationToken ct = default) => Task.FromResult(Archivos.ContainsKey(clave));
+
+        public Task EliminarAsync(string clave, CancellationToken ct = default)
+        {
+            Archivos.Remove(clave);
+            return Task.CompletedTask;
+        }
     }
 
     internal sealed class AuditoriaFalsa : IRegistroAuditoria

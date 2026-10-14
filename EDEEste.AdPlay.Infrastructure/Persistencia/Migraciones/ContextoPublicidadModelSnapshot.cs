@@ -286,6 +286,15 @@ namespace EDEEste.AdPlay.Infrastructure.Persistencia.Migraciones
                     b.Property<int>("PantallaId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("AnuncioReproduccionId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PosicionReproduccion")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SegundoReproduccion")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UltimaConexionUtc")
                         .HasPrecision(3)
                         .HasColumnType("datetime2(3)");
@@ -720,6 +729,18 @@ namespace EDEEste.AdPlay.Infrastructure.Persistencia.Migraciones
                     b.Property<DateTime>("FechaCreacionUtc")
                         .HasPrecision(3)
                         .HasColumnType("datetime2(3)");
+
+                    b.Property<DateTime?>("FotoActualizadaUtc")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<string>("FotoClaveAlmacenamiento")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("FotoTipoMime")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");

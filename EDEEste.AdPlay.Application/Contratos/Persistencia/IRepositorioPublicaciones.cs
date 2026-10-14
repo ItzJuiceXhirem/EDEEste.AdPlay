@@ -2,6 +2,9 @@ using EDEEste.AdPlay.Domain.Entities;
 
 namespace EDEEste.AdPlay.Application.Contratos.Persistencia
 {
+    /// <param name="Ultima">La publicación más reciente (cualquier estado), con su lista cargada; nula si no hay ninguna.</param>
+    public sealed record ResumenPublicaciones(int Total, int Retiradas, PublicacionLista? Ultima);
+
     public interface IRepositorioPublicaciones : IRepositorio<PublicacionLista>
     {
         Task<IReadOnlyList<PublicacionLista>> ListarPorListaAsync(int listaReproduccionId, CancellationToken ct = default);
@@ -23,5 +26,10 @@ namespace EDEEste.AdPlay.Application.Contratos.Persistencia
         /// Las listas sin versión publicada se omiten.
         /// </summary>
         Task<IReadOnlyList<PublicacionLista>> ListarUltimasPublicadasAsync(IEnumerable<int> listaReproduccionIds, CancellationToken ct = default);
+
+        /// <summary>Elementos de las publicaciones indicadas, con su anuncio y archivo multimedia; solo lectura.</summary>
+        Task<IReadOnlyList<ElementoPublicacion>> ListarElementosAsync(IEnumerable<int> publicacionIds, CancellationToken ct = default);
+
+        Task<ResumenPublicaciones> ResumirHistorialAsync(FiltroHistorial filtro, CancellationToken ct = default);
     }
 }

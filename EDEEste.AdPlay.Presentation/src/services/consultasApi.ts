@@ -5,31 +5,42 @@ import type {
   HistorialPublicacion,
   Pagina,
   RegistroAuditoria,
+  ResumenAuditoria,
+  ResumenHistorial,
 } from '../types/api'
 import { api, consulta } from './clienteApi'
 
 export interface FiltroAuditoria {
+  /** Fechas en ISO UTC. */
   desde?: string
   hasta?: string
   usuarioId?: number
   accion?: AccionAuditoria | ''
   tipoEntidad?: string
-  pagina?: number
 }
 
 export interface FiltroHistorial {
   listaReproduccionId?: number
+  desde?: string
+  hasta?: string
+}
+
+interface Paginado {
   pagina?: number
+  tamanoPagina?: number
 }
 
 export const auditoriaApi = {
-  listar: (filtro: FiltroAuditoria) => api.get<Pagina<RegistroAuditoria>>(`/auditoria${consulta({ ...filtro })}`),
+  listar: (filtro: FiltroAuditoria & Paginado) =>
+    api.get<Pagina<RegistroAuditoria>>(`/auditoria${consulta({ ...filtro })}`),
+  resumen: (filtro: FiltroAuditoria) => api.get<ResumenAuditoria>(`/auditoria/resumen${consulta({ ...filtro })}`),
 }
 
 export const historialApi = {
-  publicaciones: (filtro: FiltroHistorial) =>
+  resumen: (filtro: FiltroHistorial) => api.get<ResumenHistorial>(`/historial/resumen${consulta({ ...filtro })}`),
+  publicaciones: (filtro: FiltroHistorial & Paginado) =>
     api.get<Pagina<HistorialPublicacion>>(`/historial/publicaciones${consulta({ ...filtro })}`),
-  exportaciones: (filtro: FiltroHistorial) =>
+  exportaciones: (filtro: FiltroHistorial & Paginado) =>
     api.get<Pagina<HistorialExportacion>>(`/historial/exportaciones${consulta({ ...filtro })}`),
 }
 

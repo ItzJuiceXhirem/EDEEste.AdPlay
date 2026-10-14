@@ -22,13 +22,19 @@ namespace EDEEste.AdPlay.Tests.Infrastructure
         {
             using var contexto = CrearContexto();
 
-            // Las tablas de Identity (excepto el campo propio NombreCompleto) usan los tipos de su biblioteca.
+            // Las tablas de Identity (excepto los campos propios del usuario) usan los tipos de su biblioteca.
+            string[] propiasDeUsuario =
+            [
+                nameof(UsuarioAplicacion.NombreCompleto),
+                nameof(UsuarioAplicacion.FotoClaveAlmacenamiento),
+                nameof(UsuarioAplicacion.FotoTipoMime),
+            ];
             var propias = contexto.Model.GetEntityTypes()
                 .Where(t => t.ClrType.Namespace?.StartsWith("EDEEste.AdPlay.Domain", StringComparison.Ordinal) == true
                     || t.ClrType == typeof(UsuarioAplicacion))
                 .SelectMany(t => t.GetProperties().Select(p => (Tipo: t.ClrType, Propiedad: p)))
                 .Where(x => x.Propiedad.ClrType == typeof(string))
-                .Where(x => x.Tipo != typeof(UsuarioAplicacion) || x.Propiedad.Name == nameof(UsuarioAplicacion.NombreCompleto));
+                .Where(x => x.Tipo != typeof(UsuarioAplicacion) || propiasDeUsuario.Contains(x.Propiedad.Name));
 
             var sinLongitud = propias
                 .Where(x => x.Propiedad.GetMaxLength() is null)

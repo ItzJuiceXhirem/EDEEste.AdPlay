@@ -1,3 +1,5 @@
+using System.Globalization;
+using EDEEste.AdPlay.Application.Contratos.Servicios;
 using EDEEste.AdPlay.Domain.Entities;
 using EDEEste.AdPlay.Domain.Enums;
 
@@ -8,6 +10,16 @@ namespace EDEEste.AdPlay.Application.DTOs
     /// </summary>
     public static class Mapeos
     {
+        /// <summary>Identificador corto de la foto vigente; cambia cada vez que se reemplaza.</summary>
+        public static string? VersionFoto(DateTime? actualizadaUtc) =>
+            actualizadaUtc?.Ticks.ToString("x", CultureInfo.InvariantCulture);
+
+        public static SesionDto ASesionDto(this UsuarioInfo u) =>
+            new(u.Id, u.Correo, u.NombreCompleto, u.Rol, u.FechaCreacionUtc, VersionFoto(u.FotoActualizadaUtc));
+
+        public static UsuarioDto ADto(this UsuarioInfo u) =>
+            new(u.Id, u.Correo, u.NombreCompleto, u.Rol, u.EstaActivo, u.FechaCreacionUtc, VersionFoto(u.FotoActualizadaUtc));
+
         public static SucursalDto ADto(this Sucursal s) =>
             new(s.Id, s.Codigo, s.Nombre, s.ZonaHorariaId, s.EstaActiva, s.FechaCreacionUtc);
 
@@ -60,8 +72,18 @@ namespace EDEEste.AdPlay.Application.DTOs
                 a.EstaActivo,
                 a.FechaCreacionUtc);
 
-        public static ListaReproduccionResumenDto AResumenDto(this ListaReproduccion l) =>
-            new(l.Id, l.Nombre, l.Descripcion, l.EstaActiva, l.Elementos.Count, l.FechaCreacionUtc, l.FechaActualizacionUtc);
+        /// <param name="l">Debe incluir sus elementos con el anuncio, para calcular la duración.</param>
+        public static ListaReproduccionResumenDto AResumenDto(this ListaReproduccion l, int? ultimaVersionPublicada) =>
+            new(
+                l.Id,
+                l.Nombre,
+                l.Descripcion,
+                l.EstaActiva,
+                l.Elementos.Count,
+                l.FechaCreacionUtc,
+                l.FechaActualizacionUtc,
+                l.Elementos.Sum(e => e.DuracionEfectivaSegundos),
+                ultimaVersionPublicada);
 
         public static ListaReproduccionDto ADto(this ListaReproduccion l) =>
             new(

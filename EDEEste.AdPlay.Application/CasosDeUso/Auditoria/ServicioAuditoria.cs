@@ -1,6 +1,8 @@
 using EDEEste.AdPlay.Application.Contratos.Persistencia;
 using EDEEste.AdPlay.Application.Contratos.Servicios;
 using EDEEste.AdPlay.Application.DTOs;
+using EDEEste.AdPlay.Domain.Common;
+using EDEEste.AdPlay.Domain.Enums;
 
 namespace EDEEste.AdPlay.Application.CasosDeUso.Auditoria
 {
@@ -36,6 +38,16 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Auditoria
                     r.Detalle))
                 .ToList();
             return new PaginaDto<RegistroAuditoriaDto>(elementos, total, paginaActual, tamano);
+        }
+
+        public async Task<ResumenAuditoriaDto> ResumirAsync(FiltroAuditoria filtro, CancellationToken ct = default)
+        {
+            var resumen = await _repositorio.ResumirAsync(filtro, ct);
+            return new ResumenAuditoriaDto(
+                resumen.Total,
+                resumen.PorAccion.Where(a => ClasificacionAuditoria.EsDeRiesgo(a.Key)).Sum(a => a.Value),
+                resumen.PorAccion.GetValueOrDefault(AccionAuditoria.InicioSesionFallido),
+                resumen.Personas);
         }
     }
 }

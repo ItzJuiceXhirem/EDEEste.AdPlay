@@ -18,7 +18,7 @@ import type {
   Sucursal,
   TokenDispositivo,
 } from '../types/api'
-import { api, consulta } from './clienteApi'
+import { api, consulta, subirConProgreso } from './clienteApi'
 
 export const sucursalesApi = {
   listar: () => api.get<Sucursal[]>('/sucursales'),
@@ -43,13 +43,14 @@ export const pantallasApi = {
 
 export const multimediaApi = {
   listar: (incluirArchivados = false) => api.get<ArchivoMultimedia[]>(`/multimedia${consulta({ incluirArchivados })}`),
-  cargar: (archivo: File, duracionSegundos?: number) => {
+  /** Sube un archivo informando el avance; si ya existía uno idéntico, la API devuelve ese. */
+  cargar: (archivo: File, duracionSegundos: number | undefined, alProgreso: (fraccion: number) => void, alEnviado?: () => void) => {
     const formulario = new FormData()
     formulario.append('archivo', archivo)
     if (duracionSegundos) {
       formulario.append('duracionSegundos', String(duracionSegundos))
     }
-    return api.post<ArchivoMultimedia>('/multimedia', formulario)
+    return subirConProgreso<ArchivoMultimedia>('/multimedia', formulario, alProgreso, alEnviado)
   },
   cambiarArchivado: (id: number, estaArchivado: boolean) =>
     api.patch<ArchivoMultimedia>(`/multimedia/${id}`, { estaArchivado }),
