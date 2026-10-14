@@ -1,0 +1,142 @@
+.boton-contorno {
+  border: 1.5px solid var(--malva);
+  background: transparent;
+  color: var(--pizarra);
+}
+
+.boton-contorno:hover:not(:disabled) {
+  background: var(--superficie);
+  color: var(--titulo);
+}
+
+.ruta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--hundida);
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--pizarra);
+}
+
+.ruta strong {
+  color: var(--titulo);
+}
+
+.cabecera-bloque {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.cabecera-bloque:focus-visible {
+  outline: 3px solid var(--anillo);
+  outline-offset: 2px;
+}
+
+.bloque .cheuron {
+  flex: none;
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1);
+  color: var(--pizarra);
+}
+
+.bloque.cerrada .cheuron {
+  transform: rotate(-90deg);
+}
+
+.bloque .cuerpo {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows .4s cubic-bezier(.2, .8, .2, 1);
+}
+
+.bloque.cerrada .cuerpo {
+  grid-template-rows: 0fr;
+}
+
+.bloque .cuerpo > div {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.bloque {
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  background: var(--superficie);
+  transition: opacity .4s, background-color .45s, border-color .45s, box-shadow .25s;
+}
+
+.bloque:hover {
+  box-shadow: var(--sombra-2);
+}
+
+.bloque.inactiva {
+  opacity: .62;
+}
+
+.rama {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 10px;
+  border-radius: 10px;
+  transition: background .2s;
+}
+
+.rama:hover {
+  background: var(--sutil);
+}
+
+.rama::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: -6px;
+  width: 10px;
+  height: 26px;
+  border-left: 1.5px solid var(--borde);
+  border-bottom: 1.5px solid var(--borde);
+  border-bottom-left-radius: 8px;
+}
+
+.rama.inactivo {
+  opacity: .6;
+}
+
+.bloque.nuevo,
+.rama.nuevo {
+  animation: resaltar-rama 2.2s ease backwards;
+}
+
+@keyframes resaltar-rama {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+    background: var(--acento-fondo);
+  }
+
+  15% {
+    opacity: 1;
+    transform: none;
+    background: var(--acento-fondo);
+  }
+
+  100% {
+    background: transparent;
+  }
+}

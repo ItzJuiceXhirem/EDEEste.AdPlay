@@ -30,6 +30,7 @@ namespace EDEEste.AdPlay.Infrastructure.Persistencia
         public DbSet<ElementoPublicacion> ElementosPublicacion => Set<ElementoPublicacion>();
         public DbSet<Exportacion> Exportaciones => Set<Exportacion>();
         public DbSet<RegistroAuditoria> RegistrosAuditoria => Set<RegistroAuditoria>();
+        public DbSet<Invitacion> Invitaciones => Set<Invitacion>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -65,6 +66,8 @@ namespace EDEEste.AdPlay.Infrastructure.Persistencia
             {
                 e.ToTable("Usuarios");
                 e.Property(u => u.NombreCompleto).HasMaxLength(LongitudesMaximas.NombreCompleto).IsRequired();
+                e.Property(u => u.FotoClaveAlmacenamiento).HasMaxLength(LongitudesMaximas.ClaveAlmacenamiento);
+                e.Property(u => u.FotoTipoMime).HasMaxLength(LongitudesMaximas.TipoMime);
             });
             builder.Entity<RolAplicacion>().ToTable("Roles");
             builder.Entity<IdentityUserRole<int>>().ToTable("UsuariosRoles");
@@ -86,6 +89,8 @@ namespace EDEEste.AdPlay.Infrastructure.Persistencia
             Relacionar<PublicacionLista>(builder, e => e.UsuarioPublicadorId);
             Relacionar<Exportacion>(builder, e => e.UsuarioSolicitanteId);
             Relacionar<RegistroAuditoria>(builder, e => e.UsuarioId);
+            Relacionar<Invitacion>(builder, e => e.UsuarioCreadorId);
+            Relacionar<Invitacion>(builder, e => e.UsuarioActivadoId);
         }
 
         private static void Relacionar<TEntidad>(ModelBuilder builder, Expression<Func<TEntidad, object?>> usuarioId)

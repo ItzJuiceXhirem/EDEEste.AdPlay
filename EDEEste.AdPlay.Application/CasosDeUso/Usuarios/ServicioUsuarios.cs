@@ -33,7 +33,7 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Usuarios
         }
 
         public async Task<IReadOnlyList<UsuarioDto>> ListarAsync(CancellationToken ct = default) =>
-            (await _gestor.ListarAsync(ct)).Select(ADto).ToList();
+            (await _gestor.ListarAsync(ct)).Select(u => u.ADto()).ToList();
 
         public async Task<UsuarioDto> CrearAsync(CrearUsuarioDto dto, CancellationToken ct = default)
         {
@@ -48,7 +48,7 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Usuarios
             var usuario = await _gestor.CrearAsync(dto.Correo.Trim(), dto.NombreCompleto.Trim(), dto.Rol, dto.Clave, ct);
             _auditoria.Registrar(AccionAuditoria.Crear, TipoEntidadUsuario, usuario.Id, $"Usuario {usuario.Correo} con rol {usuario.Rol}");
             await _unidadDeTrabajo.GuardarCambiosAsync(ct);
-            return ADto(usuario);
+            return usuario.ADto();
         }
 
         public async Task<UsuarioDto> ActualizarAsync(int id, ActualizarUsuarioDto dto, CancellationToken ct = default)
@@ -69,7 +69,7 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Usuarios
             _auditoria.Registrar(accion, TipoEntidadUsuario, id, $"Usuario {actual.Correo}, rol {dto.Rol}");
             await _unidadDeTrabajo.GuardarCambiosAsync(ct);
 
-            return ADto((await _gestor.ObtenerAsync(id, ct))!);
+            return (await _gestor.ObtenerAsync(id, ct))!.ADto();
         }
 
         public async Task RestablecerClaveAsync(int id, RestablecerClaveDto dto, CancellationToken ct = default)
@@ -118,8 +118,5 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Usuarios
                 throw new ExcepcionConflicto("Debe existir al menos un administrador activo.");
             }
         }
-
-        private static UsuarioDto ADto(UsuarioInfo u) =>
-            new(u.Id, u.Correo, u.NombreCompleto, u.Rol, u.EstaActivo, u.FechaCreacionUtc);
     }
 }

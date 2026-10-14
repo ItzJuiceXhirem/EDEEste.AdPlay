@@ -38,10 +38,7 @@ namespace EDEEste.AdPlay.Infrastructure.Repositorios
         public async Task<(IReadOnlyList<PublicacionLista> Publicaciones, int Total)> ListarHistorialAsync(
             FiltroHistorial filtro, int pagina, int tamanoPagina, CancellationToken ct = default)
         {
-            var consulta = Conjunto
-                .Where(p => filtro.ListaReproduccionId == null || p.ListaReproduccionId == filtro.ListaReproduccionId)
-                .Where(p => filtro.DesdeUtc == null || p.FechaPublicacionUtc >= filtro.DesdeUtc)
-                .Where(p => filtro.HastaUtc == null || p.FechaPublicacionUtc < filtro.HastaUtc);
+            var consulta = FiltrarHistorial(filtro);
 
             var total = await consulta.CountAsync(ct);
             var publicaciones = await consulta
@@ -80,6 +77,49 @@ namespace EDEEste.AdPlay.Infrastructure.Repositorios
                 })
                 .ToList();
         }
+
+        public async Task<IReadOnlyList<ElementoPublicacion>> ListarElementosAsync(
+            IEnumerable<int> publicacionIds, CancellationToken ct = default)
+        {
+            var ids = publicacionIds.Distinct().ToList();
+            if (ids.Count == 0)
+            {
+                return [];
+            }
+
+            return await Contexto.ElementosPublicacion
+                .Include(e => e.Anuncio)
+                .Include(e => e.ArchivoMultimedia)
+                .Where(e => ids.Contains(e.PublicacionListaId))
+                .OrderBy(e => e.PublicacionListaId).ThenBy(e => e.Posicion)
+                .AsNoTracking()
+                .ToListAsync(ct);
+        }
+
+        public async Task<ResumenPublicaciones> ResumirHistorialAsync(FiltroHistorial filtro, CancellationToken ct = default)
+        {
+            var consulta = FiltrarHistorial(filtro);
+            var porEstado = await consulta
+                .GroupBy(p => p.EstadoPublicacion)
+                .Select(g => new { Estado = g.Key, Cantidad = g.Count() })
+                .ToListAsync(ct);
+            var ultima = await consulta
+                .Include(p => p.ListaReproduccion)
+                .OrderByDescending(p => p.FechaPublicacionUtc).ThenByDescending(p => p.Id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(ct);
+
+            return new ResumenPublicaciones(
+                porEstado.Sum(e => e.Cantidad),
+                porEstado.Where(e => e.Estado == EstadoPublicacion.Retirada).Sum(e => e.Cantidad),
+                ultima);
+        }
+
+        private IQueryable<PublicacionLista> FiltrarHistorial(FiltroHistorial filtro) =>
+            Conjunto
+                .Where(p => filtro.ListaReproduccionId == null || p.ListaReproduccionId == filtro.ListaReproduccionId)
+                .Where(p => filtro.DesdeUtc == null || p.FechaPublicacionUtc >= filtro.DesdeUtc)
+                .Where(p => filtro.HastaUtc == null || p.FechaPublicacionUtc < filtro.HastaUtc);
 
         private IQueryable<PublicacionLista> ConElementos() =>
             Conjunto

@@ -31,6 +31,12 @@ export function useSincronizacionReproductor(token: string | null) {
     errorReproduccion.current = mensaje
   }, [])
 
+  // Anuncio en pantalla y cuándo empezó; el latido informa el segundo para que el panel muestre el avance.
+  const enPantalla = useRef<{ version: string; posicion: number; anuncioId: number; inicio: number } | null>(null)
+  const reportarReproduccion = useCallback((version: string, posicion: number, anuncioId: number) => {
+    enPantalla.current = { version, posicion, anuncioId, inicio: performance.now() }
+  }, [])
+
   useEffect(() => {
     if (!token) {
       return
@@ -100,7 +106,12 @@ export function useSincronizacionReproductor(token: string | null) {
       }
 
       try {
-        await enviarLatido(token, versionActiva, ultimoError ?? errorReproduccion.current)
+        const actual = enPantalla.current
+        const reproduccion =
+          actual && actual.version === versionActiva
+            ? { posicion: actual.posicion, anuncioId: actual.anuncioId, segundo: Math.floor((performance.now() - actual.inicio) / 1000) }
+            : null
+        await enviarLatido(token, versionActiva, ultimoError ?? errorReproduccion.current, reproduccion)
       } catch {
         // Sin conexión: se reintenta en el siguiente ciclo.
       }
@@ -131,5 +142,5 @@ export function useSincronizacionReproductor(token: string | null) {
     }
   }, [token])
 
-  return { estado, reportarError }
+  return { estado, reportarError, reportarReproduccion }
 }

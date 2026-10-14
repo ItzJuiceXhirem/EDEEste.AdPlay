@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSincronizacionReproductor } from '../../hooks/useSincronizacionReproductor'
 import { guardarToken, leerToken } from '../../services/almacenReproductor'
 import type { ElementoManifiesto } from '../../types/api'
@@ -21,7 +21,7 @@ function resolverToken(): string | null {
 
 export function ReproductorPage() {
   const [token] = useState(resolverToken)
-  const { estado, reportarError } = useSincronizacionReproductor(token)
+  const { estado, reportarError, reportarReproduccion } = useSincronizacionReproductor(token)
 
   const pantallaCompleta = () => {
     if (!document.fullscreenElement) {
@@ -32,7 +32,13 @@ export function ReproductorPage() {
   return (
     <div className="reproductor" onClick={pantallaCompleta}>
       {estado.tipo === 'reproduciendo' && (
-        <Carrusel key={estado.version} elementos={estado.elementos} urls={estado.urls} alError={reportarError} />
+        <Carrusel
+          key={estado.version}
+          elementos={estado.elementos}
+          urls={estado.urls}
+          alError={reportarError}
+          alMostrar={(posicion, anuncioId) => reportarReproduccion(estado.version, posicion, anuncioId)}
+        />
       )}
       {estado.tipo === 'cargando' && <EsperaAnimada titulo="Cargando contenido…" />}
       {estado.tipo === 'sin-contenido' && (
@@ -52,15 +58,25 @@ interface PropsCarrusel {
   elementos: ElementoManifiesto[]
   urls: Record<number, string>
   alError: (mensaje: string) => void
+  /** Se llama cada vez que empieza a mostrarse un anuncio. */
+  alMostrar: (posicion: number, anuncioId: number) => void
 }
 
 /** Pausa antes de pasar al siguiente cuando un medio falla, para no entrar en un ciclo veloz de errores. */
 const ESPERA_TRAS_ERROR_MS = 1000
 
-function Carrusel({ elementos, urls, alError }: PropsCarrusel) {
+function Carrusel({ elementos, urls, alError, alMostrar }: PropsCarrusel) {
   const [indice, setIndice] = useState(0)
   const [ciclo, setCiclo] = useState(0)
   const actual = elementos[indice]
+
+  const mostrar = useRef(alMostrar)
+  useEffect(() => {
+    mostrar.current = alMostrar
+  })
+  useEffect(() => {
+    mostrar.current(actual.posicion, actual.anuncioId)
+  }, [ciclo, indice, actual.posicion, actual.anuncioId])
 
   const siguiente = () => {
     if (indice + 1 >= elementos.length) {

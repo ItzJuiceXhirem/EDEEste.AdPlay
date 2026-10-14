@@ -41,6 +41,7 @@ namespace EDEEste.AdPlay.Infrastructure
             services.AddScoped<IRepositorioPublicaciones, RepositorioPublicaciones>();
             services.AddScoped<IRepositorioExportaciones, RepositorioExportaciones>();
             services.AddScoped<IRepositorioAuditoria, RepositorioAuditoria>();
+            services.AddScoped<IRepositorioInvitaciones, RepositorioInvitaciones>();
 
             // Una misma instancia por operación: la unidad de trabajo guarda lo que los servicios registran.
             services.AddScoped<RegistroAuditoriaEf>();

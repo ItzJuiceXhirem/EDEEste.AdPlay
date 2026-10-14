@@ -14,5 +14,11 @@ namespace EDEEste.AdPlay.Infrastructure.Identidad
         public bool EstaActivo { get; set; } = true;
 
         public DateTime FechaCreacionUtc { get; set; }
+
+        /// <summary>Clave de la foto de perfil en el almacenamiento de medios; nula si no tiene.</summary>
+        public string? FotoClaveAlmacenamiento { get; set; }
+
+        public string? FotoTipoMime { get; set; }
+        public DateTime? FotoActualizadaUtc { get; set; }
     }
 }

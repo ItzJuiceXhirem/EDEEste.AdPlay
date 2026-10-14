@@ -1,0 +1,56 @@
+.cabecera-sucursal {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 20px 24px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 16px;
+}
+
+.cabecera-sucursal:focus-visible {
+  outline: 3px solid var(--anillo);
+  outline-offset: 2px;
+}
+
+.cheuron {
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1);
+  color: var(--pizarra);
+}
+
+.cerrada .cheuron {
+  transform: rotate(-90deg);
+}
+
+.cuerpo-sucursal {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows .4s cubic-bezier(.2, .8, .2, 1);
+}
+
+.cerrada .cuerpo-sucursal {
+  grid-template-rows: 0fr;
+}
+
+.cuerpo-sucursal > div {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.tabla-supervision td {
+  vertical-align: top;
+}
+
+.anillo-cuenta {
+  transition: stroke-dashoffset 1s linear;
+}
+
+.refrescando tr.fila {
+  animation: destello .7s ease;
+}

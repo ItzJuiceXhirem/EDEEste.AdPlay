@@ -6,5 +6,11 @@ namespace EDEEste.AdPlay.Application.Excepciones
             : base($"No se encontró {entidad} con identificador '{id}'.")
         {
         }
+
+        /// <summary>Con un mensaje propio, cuando el identificador no debe aparecer (por ejemplo, un token).</summary>
+        public ExcepcionNoEncontrado(string mensaje)
+            : base(mensaje)
+        {
+        }
     }
 }

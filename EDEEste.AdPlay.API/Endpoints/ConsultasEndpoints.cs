@@ -32,8 +32,32 @@ namespace EDEEste.AdPlay.API.Endpoints
                 .WithTags("Auditoría")
                 .RequireAuthorization(PoliticasAcceso.Administracion);
 
+            rutas.MapGet("/auditoria/resumen", (
+                DateTime? desde,
+                DateTime? hasta,
+                int? usuarioId,
+                AccionAuditoria? accion,
+                string? tipoEntidad,
+                ServicioAuditoria servicio,
+                CancellationToken ct) =>
+                servicio.ResumirAsync(
+                    new FiltroAuditoria(desde?.ToUniversalTime(), hasta?.ToUniversalTime(), usuarioId, accion, tipoEntidad),
+                    ct))
+                .WithTags("Auditoría")
+                .WithSummary("Totales de los registros que cumplen el filtro, sin paginar.")
+                .RequireAuthorization(PoliticasAcceso.Administracion);
+
             var historial = rutas.MapGroup("/historial").WithTags("Historial")
                 .RequireAuthorization(PoliticasAcceso.Lectura);
+
+            historial.MapGet("/resumen", (
+                int? listaReproduccionId,
+                DateTime? desde,
+                DateTime? hasta,
+                ServicioHistorial servicio,
+                CancellationToken ct) =>
+                servicio.ResumirAsync(new FiltroHistorial(listaReproduccionId, desde?.ToUniversalTime(), hasta?.ToUniversalTime()), ct))
+                .WithSummary("Totales de publicaciones y paquetes que cumplen el filtro, sin paginar.");
 
             historial.MapGet("/publicaciones", (
                 int? listaReproduccionId,

@@ -89,7 +89,7 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Reproductor
         }
 
         /// <summary>
-        /// Registra que el reproductor está activo y qué versión tiene realmente cargada.
+        /// Registra que el reproductor está activo, qué versión tiene realmente cargada y qué anuncio está mostrando.
         /// </summary>
         public async Task RegistrarLatidoAsync(string token, LatidoDto dto, CancellationToken ct = default)
         {
@@ -98,6 +98,15 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Reproductor
             pantalla.Estado.UltimaConexionUtc = _reloj.GetUtcNow().UtcDateTime;
             pantalla.Estado.UltimaVersionReportada = dto.VersionReportada.Recortar(LongitudesMaximas.VersionReportada);
             pantalla.Estado.UltimoError = dto.Error.Recortar(LongitudesMaximas.DetalleError);
+
+            // Sin versión cargada no hay nada en pantalla; datos fuera de rango se descartan en lugar de rechazar el latido.
+            var reproduccion = dto.VersionReportada is not null && dto.Reproduccion is { Posicion: > 0, AnuncioId: > 0, Segundo: >= 0 } r
+                ? r
+                : null;
+            pantalla.Estado.PosicionReproduccion = reproduccion?.Posicion;
+            pantalla.Estado.AnuncioReproduccionId = reproduccion?.AnuncioId;
+            pantalla.Estado.SegundoReproduccion = reproduccion is null ? null : Math.Min(reproduccion.Segundo, ReglasDuracion.MaximoSegundos);
+
             await _unidadDeTrabajo.GuardarCambiosAsync(ct);
         }
 

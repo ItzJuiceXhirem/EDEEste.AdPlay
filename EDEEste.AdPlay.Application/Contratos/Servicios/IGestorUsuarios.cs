@@ -1,12 +1,17 @@
 namespace EDEEste.AdPlay.Application.Contratos.Servicios
 {
+    /// <param name="FotoActualizadaUtc">Cuándo cambió la foto de perfil por última vez; nulo si no tiene.</param>
     public sealed record UsuarioInfo(
         int Id,
         string Correo,
         string NombreCompleto,
         string Rol,
         bool EstaActivo,
-        DateTime FechaCreacionUtc);
+        DateTime FechaCreacionUtc,
+        DateTime? FotoActualizadaUtc = null);
+
+    /// <summary>Foto de perfil guardada en <see cref="IAlmacenamientoMultimedia"/>.</summary>
+    public sealed record FotoPerfil(string ClaveAlmacenamiento, string TipoMime, DateTime ActualizadaUtc);
 
     public enum ResultadoCredenciales
     {
@@ -31,6 +36,9 @@ namespace EDEEste.AdPlay.Application.Contratos.Servicios
         Task<IReadOnlyList<UsuarioInfo>> ListarAsync(CancellationToken ct = default);
         Task<int> ContarAdministradoresActivosAsync(CancellationToken ct = default);
 
+        /// <summary>Indica si ya hay una cuenta con ese correo (sin distinguir mayúsculas).</summary>
+        Task<bool> ExisteCorreoAsync(string correo, CancellationToken ct = default);
+
         /// <summary>Indica si ya hay al menos un usuario (activo o no).</summary>
         Task<bool> ExistenUsuariosAsync(CancellationToken ct = default);
 
@@ -43,5 +51,12 @@ namespace EDEEste.AdPlay.Application.Contratos.Servicios
 
         /// <summary>Nombre para mostrar de cada usuario; los ids desconocidos se omiten.</summary>
         Task<IReadOnlyDictionary<int, string>> ObtenerNombresAsync(IEnumerable<int> ids, CancellationToken ct = default);
+
+        /// <returns>Nulo si el usuario no tiene foto.</returns>
+        Task<FotoPerfil?> ObtenerFotoAsync(int id, CancellationToken ct = default);
+
+        /// <summary>Asigna la foto (o la quita, con nulo).</summary>
+        /// <returns>La foto anterior, para que el llamador borre su archivo; nula si no tenía.</returns>
+        Task<FotoPerfil?> ReemplazarFotoAsync(int id, FotoPerfil? nueva, CancellationToken ct = default);
     }
 }

@@ -81,6 +81,9 @@ namespace EDEEste.AdPlay.Infrastructure.Identidad
             return filas.Select(f => ADto(f.Usuario, f.Rol ?? string.Empty)).ToList();
         }
 
+        public async Task<bool> ExisteCorreoAsync(string correo, CancellationToken ct = default) =>
+            await _usuarios.FindByEmailAsync(correo) is not null;
+
         public Task<bool> ExistenUsuariosAsync(CancellationToken ct = default) =>
             _contexto.Users.AnyAsync(ct);
 
@@ -185,6 +188,29 @@ namespace EDEEste.AdPlay.Infrastructure.Identidad
                 .ToDictionaryAsync(u => u.Id, u => u.NombreCompleto != "" ? u.NombreCompleto : u.Email!, ct);
         }
 
+        public async Task<FotoPerfil?> ObtenerFotoAsync(int id, CancellationToken ct = default)
+        {
+            var foto = await _contexto.Users.AsNoTracking()
+                .Where(u => u.Id == id && u.FotoClaveAlmacenamiento != null)
+                .Select(u => new { u.FotoClaveAlmacenamiento, u.FotoTipoMime, u.FotoActualizadaUtc })
+                .FirstOrDefaultAsync(ct);
+            return foto is null ? null : new FotoPerfil(foto.FotoClaveAlmacenamiento!, foto.FotoTipoMime!, foto.FotoActualizadaUtc!.Value);
+        }
+
+        public async Task<FotoPerfil?> ReemplazarFotoAsync(int id, FotoPerfil? nueva, CancellationToken ct = default)
+        {
+            var usuario = await ObtenerEntidadAsync(id);
+            var anterior = usuario.FotoClaveAlmacenamiento is null
+                ? null
+                : new FotoPerfil(usuario.FotoClaveAlmacenamiento, usuario.FotoTipoMime!, usuario.FotoActualizadaUtc!.Value);
+
+            usuario.FotoClaveAlmacenamiento = nueva?.ClaveAlmacenamiento;
+            usuario.FotoTipoMime = nueva?.TipoMime;
+            usuario.FotoActualizadaUtc = nueva?.ActualizadaUtc;
+            LanzarSiHayErrores(await _usuarios.UpdateAsync(usuario));
+            return anterior;
+        }
+
         private async Task<UsuarioAplicacion> ObtenerEntidadAsync(int id) =>
             await _usuarios.FindByIdAsync(id.ToString()) ?? throw new ExcepcionNoEncontrado("el usuario", id);
 
@@ -192,7 +218,14 @@ namespace EDEEste.AdPlay.Infrastructure.Identidad
             ADto(usuario, (await _usuarios.GetRolesAsync(usuario)).FirstOrDefault() ?? string.Empty);
 
         private static UsuarioInfo ADto(UsuarioAplicacion usuario, string rol) =>
-            new(usuario.Id, usuario.Email ?? string.Empty, usuario.NombreCompleto, rol, usuario.EstaActivo, usuario.FechaCreacionUtc);
+            new(
+                usuario.Id,
+                usuario.Email ?? string.Empty,
+                usuario.NombreCompleto,
+                rol,
+                usuario.EstaActivo,
+                usuario.FechaCreacionUtc,
+                usuario.FotoClaveAlmacenamiento is null ? null : usuario.FotoActualizadaUtc);
 
         private static void LanzarSiHayErrores(IdentityResult resultado)
         {

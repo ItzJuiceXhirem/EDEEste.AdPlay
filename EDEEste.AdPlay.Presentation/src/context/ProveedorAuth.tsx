@@ -39,9 +39,18 @@ export function ProveedorAuth({ children }: { children: ReactNode }) {
     setSesion(await sesionApi.obtenerSesion())
   }, [])
 
+  const activarCuenta = useCallback(async (token: string, nombreCompleto: string, clave: string) => {
+    guardarTokens(await sesionApi.activarCuenta(token, nombreCompleto, clave))
+    setSesion(await sesionApi.obtenerSesion())
+  }, [])
+
   const cerrarSesion = useCallback(() => {
     limpiarTokens()
     setSesion(null)
+  }, [])
+
+  const refrescarSesion = useCallback(async () => {
+    setSesion(await sesionApi.obtenerSesion())
   }, [])
 
   const valor = useMemo<ValorAuth>(
@@ -51,9 +60,11 @@ export function ProveedorAuth({ children }: { children: ReactNode }) {
       esAdministrador: sesion?.rol === ROLES.administrador,
       iniciarSesion,
       registrarAdministradorInicial,
+      activarCuenta,
       cerrarSesion,
+      refrescarSesion,
     }),
-    [sesion, cargando, iniciarSesion, registrarAdministradorInicial, cerrarSesion],
+    [sesion, cargando, iniciarSesion, registrarAdministradorInicial, activarCuenta, cerrarSesion, refrescarSesion],
   )
 
   return <AuthContexto.Provider value={valor}>{children}</AuthContexto.Provider>

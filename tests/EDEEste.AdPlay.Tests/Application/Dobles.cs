@@ -1,6 +1,7 @@
 using EDEEste.AdPlay.Application.Contratos.Persistencia;
 using EDEEste.AdPlay.Application.Contratos.Servicios;
 using EDEEste.AdPlay.Domain.Common;
+using EDEEste.AdPlay.Domain.Entities;
 using EDEEste.AdPlay.Domain.Enums;
 
 namespace EDEEste.AdPlay.Tests.Application
@@ -21,6 +22,9 @@ namespace EDEEste.AdPlay.Tests.Application
 
         public Task<IReadOnlyList<UsuarioInfo>> ListarAsync(CancellationToken ct = default) =>
             Task.FromResult<IReadOnlyList<UsuarioInfo>>(Usuarios.Values.ToList());
+
+        public Task<bool> ExisteCorreoAsync(string correo, CancellationToken ct = default) =>
+            Task.FromResult(Usuarios.Values.Any(u => string.Equals(u.Correo, correo, StringComparison.OrdinalIgnoreCase)));
 
         public Task<bool> ExistenUsuariosAsync(CancellationToken ct = default) =>
             Task.FromResult(Usuarios.Count > 0);
@@ -48,6 +52,78 @@ namespace EDEEste.AdPlay.Tests.Application
 
         public Task<IReadOnlyDictionary<int, string>> ObtenerNombresAsync(IEnumerable<int> ids, CancellationToken ct = default) =>
             Task.FromResult<IReadOnlyDictionary<int, string>>(new Dictionary<int, string>());
+
+        public Dictionary<int, FotoPerfil> Fotos { get; } = [];
+
+        public Task<FotoPerfil?> ObtenerFotoAsync(int id, CancellationToken ct = default) =>
+            Task.FromResult(Fotos.GetValueOrDefault(id));
+
+        public Task<FotoPerfil?> ReemplazarFotoAsync(int id, FotoPerfil? nueva, CancellationToken ct = default)
+        {
+            var anterior = Fotos.GetValueOrDefault(id);
+            if (nueva is null)
+            {
+                Fotos.Remove(id);
+            }
+            else
+            {
+                Fotos[id] = nueva;
+            }
+
+            return Task.FromResult(anterior);
+        }
+    }
+
+    /// <summary>Invitaciones en memoria; asigna el id al agregar, como haría la base al guardar.</summary>
+    internal sealed class RepositorioInvitacionesFalso : IRepositorioInvitaciones
+    {
+        public List<Invitacion> Invitaciones { get; } = [];
+
+        public Task<Invitacion?> ObtenerPorIdAsync(int id, CancellationToken ct = default) =>
+            Task.FromResult(Invitaciones.FirstOrDefault(i => i.Id == id));
+
+        public void Agregar(Invitacion entidad)
+        {
+            entidad.Id = Invitaciones.Count + 1;
+            Invitaciones.Add(entidad);
+        }
+
+        public void Eliminar(Invitacion entidad) => Invitaciones.Remove(entidad);
+
+        public Task<Invitacion?> ObtenerPorTokenHashAsync(string tokenHash, CancellationToken ct = default) =>
+            Task.FromResult(Invitaciones.FirstOrDefault(i => i.TokenHash == tokenHash));
+
+        public Task<IReadOnlyList<Invitacion>> ListarAbiertasAsync(CancellationToken ct = default) =>
+            Task.FromResult<IReadOnlyList<Invitacion>>(Invitaciones.Where(i => i.EstaAbierta).OrderByDescending(i => i.FechaCreacionUtc).ToList());
+
+        public Task<IReadOnlyList<Invitacion>> ListarAbiertasPorCorreoAsync(string correo, CancellationToken ct = default) =>
+            Task.FromResult<IReadOnlyList<Invitacion>>(
+                Invitaciones.Where(i => i.EstaAbierta && string.Equals(i.Correo, correo, StringComparison.OrdinalIgnoreCase)).ToList());
+    }
+
+    /// <summary>Almacenamiento en memoria: guarda el contenido por clave y permite comprobar qué se borró.</summary>
+    internal sealed class AlmacenamientoFalso : IAlmacenamientoMultimedia
+    {
+        public Dictionary<string, byte[]> Archivos { get; } = [];
+
+        public async Task<ResultadoAlmacenamiento> GuardarAsync(string clave, Stream contenido, CancellationToken ct = default)
+        {
+            using var memoria = new MemoryStream();
+            await contenido.CopyToAsync(memoria, ct);
+            Archivos[clave] = memoria.ToArray();
+            return new ResultadoAlmacenamiento(memoria.Length, "hash");
+        }
+
+        public Task<Stream> AbrirLecturaAsync(string clave, CancellationToken ct = default) =>
+            Task.FromResult<Stream>(new MemoryStream(Archivos[clave]));
+
+        public Task<bool> ExisteAsync(string clave, CancellationToken ct = default) => Task.FromResult(Archivos.ContainsKey(clave));
+
+        public Task EliminarAsync(string clave, CancellationToken ct = default)
+        {
+            Archivos.Remove(clave);
+            return Task.CompletedTask;
+        }
     }
 
     internal sealed class AuditoriaFalsa : IRegistroAuditoria

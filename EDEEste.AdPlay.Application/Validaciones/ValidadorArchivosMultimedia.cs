@@ -43,13 +43,41 @@ namespace EDEEste.AdPlay.Application.Validaciones
             ReadOnlyMemory<byte> cabecera,
             OpcionesMultimedia opciones)
         {
+            var formato = ValidarFormato(Formatos, nombreOriginal, tipoMimeDeclarado, cabecera);
+            var maximo = formato.TipoMultimedia == TipoMultimedia.Imagen
+                ? opciones.TamanoMaximoImagenBytes
+                : opciones.TamanoMaximoVideoBytes;
+            ValidarTamano(longitud, maximo);
+            return (formato.TipoMultimedia, formato.TipoMime, formato.Extension);
+        }
+
+        /// <summary>Como <see cref="Validar"/>, pero solo admite imágenes (por ejemplo, fotos de perfil).</summary>
+        public static (string TipoMime, string Extension) ValidarImagen(
+            string nombreOriginal,
+            string tipoMimeDeclarado,
+            long longitud,
+            ReadOnlyMemory<byte> cabecera,
+            long maximoBytes)
+        {
+            var imagenes = Formatos.Where(f => f.TipoMultimedia == TipoMultimedia.Imagen).ToArray();
+            var formato = ValidarFormato(imagenes, nombreOriginal, tipoMimeDeclarado, cabecera);
+            ValidarTamano(longitud, maximoBytes);
+            return (formato.TipoMime, formato.Extension);
+        }
+
+        private static FormatoPermitido ValidarFormato(
+            IReadOnlyCollection<FormatoPermitido> permitidos,
+            string nombreOriginal,
+            string tipoMimeDeclarado,
+            ReadOnlyMemory<byte> cabecera)
+        {
             var extension = Path.GetExtension(nombreOriginal).ToLowerInvariant();
-            var formato = Formatos.FirstOrDefault(f => f.Extension == extension);
+            var formato = permitidos.FirstOrDefault(f => f.Extension == extension);
             if (formato is null)
             {
                 throw new ExcepcionValidacion(
                     "Archivo",
-                    $"Formato no permitido. Formatos aceptados: {string.Join(", ", ExtensionesPermitidas)}.");
+                    $"Formato no permitido. Formatos aceptados: {string.Join(", ", permitidos.Select(f => f.Extension))}.");
             }
 
             if (!string.Equals(formato.TipoMime, tipoMimeDeclarado, StringComparison.OrdinalIgnoreCase))
@@ -62,15 +90,15 @@ namespace EDEEste.AdPlay.Application.Validaciones
                 throw new ExcepcionValidacion("Archivo", "El contenido del archivo no corresponde a su formato declarado.");
             }
 
-            var maximo = formato.TipoMultimedia == TipoMultimedia.Imagen
-                ? opciones.TamanoMaximoImagenBytes
-                : opciones.TamanoMaximoVideoBytes;
+            return formato;
+        }
+
+        private static void ValidarTamano(long longitud, long maximo)
+        {
             if (longitud <= 0 || longitud > maximo)
             {
                 throw new ExcepcionValidacion("Archivo", $"El archivo debe pesar entre 1 byte y {maximo / (1024 * 1024)} MB.");
             }
-
-            return (formato.TipoMultimedia, formato.TipoMime, formato.Extension);
         }
 
         private static bool EsJpeg(ReadOnlyMemory<byte> c) => c.Span.StartsWith(new byte[] { 0xFF, 0xD8, 0xFF });

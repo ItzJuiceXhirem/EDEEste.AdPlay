@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router'
 import { LayoutAdmin } from './components/LayoutAdmin'
 import { RutaProtegida } from './components/RutaProtegida'
 import { SOLO_ADMINISTRADOR } from './constants/seguridad'
+import { ActivarCuentaPage } from './pages/ActivarCuentaPage'
 import { IniciarSesionPage } from './pages/IniciarSesionPage'
 import { RegistroInicialPage } from './pages/RegistroInicialPage'
 import { AuditoriaPage } from './pages/admin/AuditoriaPage'
@@ -22,6 +23,8 @@ export default function App() {
       <Route path="/reproductor" element={<ReproductorPage />} />
       <Route path="/iniciar-sesion" element={<IniciarSesionPage />} />
       <Route path="/registro" element={<RegistroInicialPage />} />
+      {/* Enlace de invitación: la persona activa su cuenta sin tener sesión. */}
+      <Route path="/activar" element={<ActivarCuentaPage />} />
 
       <Route element={<RutaProtegida />}>
         <Route path="/admin" element={<LayoutAdmin />}>

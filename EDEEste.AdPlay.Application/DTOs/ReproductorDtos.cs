@@ -36,5 +36,10 @@ namespace EDEEste.AdPlay.Application.DTOs
         long TamanoBytes,
         string HashSha256);
 
-    public sealed record LatidoDto(string? VersionReportada, string? Error);
+    /// <param name="Reproduccion">Qué muestra el reproductor en este momento; nulo si no está reproduciendo nada.</param>
+    public sealed record LatidoDto(string? VersionReportada, string? Error, ReproduccionActualDto? Reproduccion = null);
+
+    /// <param name="Posicion">Posición del anuncio dentro de la versión reportada (la misma del manifiesto).</param>
+    /// <param name="Segundo">Segundos que lleva el anuncio en pantalla.</param>
+    public sealed record ReproduccionActualDto(int Posicion, int AnuncioId, int Segundo);
 }

@@ -10,5 +10,8 @@ namespace EDEEste.AdPlay.Application.Contratos.Servicios
             $"medios/{ahoraUtc:yyyy}/{ahoraUtc:MM}/{Guid.NewGuid():N}{extension}";
 
         public static string ParaExportacion() => $"exportaciones/{Guid.NewGuid():N}.zip";
+
+        /// <summary>Cada foto nueva lleva una clave distinta: los archivos son inmutables y la anterior se borra aparte.</summary>
+        public static string ParaFotoPerfil(int usuarioId, string extension) => $"perfiles/{usuarioId}/{Guid.NewGuid():N}{extension}";
     }
 }

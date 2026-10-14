@@ -157,15 +157,36 @@ npm run lint --prefix EDEEste.AdPlay.Presentation
   siguiente asignación en prioridad. Dos asignaciones del mismo destino no pueden coincidir en fechas y horario.
 - **Supervisión:** el reporte `/api/reportes/estado-pantallas` compara la versión que cada pantalla *debería*
   reproducir con la que informó haber cargado.
+- **Reproducción en curso:** el reproductor web informa en cada latido el anuncio que muestra y su segundo
+  (`reproduccion` en `LatidoDto`). El reporte de supervisión devuelve los anuncios de la versión esperada y ese dato
+  (solo si la pantalla está en línea con la versión esperada); el panel estima el avance entre latidos y lo muestra
+  en Pantallas, con una vista ampliada. En paquete local no hay latidos con reproducción.
+- **Foto de perfil:** `PUT /api/auth/foto` (multipart, campo `archivo`) y `DELETE /api/auth/foto` para la persona con
+  sesión; `GET /api/usuarios/{id}/foto` la devuelve. Se valida como imagen (tipo, firma y hasta
+  `Multimedia:TamanoMaximoFotoPerfilMb`, 2 MB). La sesión y el listado de usuarios traen `fotoVersion`, que cambia
+  con cada foto; el panel la usa en la consulta (`?v=`) para poder guardarla en caché.
+- **Resúmenes:** `GET /api/historial/resumen` y `GET /api/auditoria/resumen` devuelven los totales de las tarjetas
+  de esas páginas con los mismos filtros que los listados.
+- **Panel:** tema claro y oscuro (se guarda en el navegador, clave `adplay-tema`) con fuentes Charis SIL y Sansation.
+  La migración `PanelNuevo` agrega las columnas de la foto de perfil y de la reproducción en curso.
+- **Invitaciones:** desde Usuarios, un administrador invita a una persona con su correo y su rol
+  (`POST /api/invitaciones`) y recibe un enlace `/activar?token=…` para compartirlo; con él la persona elige su
+  contraseña y queda con la sesión iniciada (`POST /api/auth/invitacion` para consultarla y `POST /api/auth/activar`
+  para activarla, ambos sin sesión y con límite de intentos). El enlace sirve una vez, vence a los 7 días y se guarda
+  solo su hash; invitar de nuevo al mismo correo anula el enlace anterior, y `DELETE /api/invitaciones/{id}` lo anula
+  a mano. También se puede seguir creando la cuenta con una contraseña inicial. Migración `Invitaciones`.
 
 ## Pendiente
 
 - **Agente de sincronización local / SignalR:** el documento lo condiciona a respuestas de la Fase 0 que siguen sin
   confirmarse (dónde vive la carpeta de anuncios, si TI permite un agente, qué nivel de actualización se requiere).
   Hoy el modo local es descarga manual del ZIP y el modo web usa consultas periódicas.
+- **Miniaturas de video:** el panel muestra la imagen real de los anuncios de imagen; para los videos usa un
+  degradado, porque generar un cuadro requiere descargar el archivo completo. Se podría guardar un cuadro al subirlo.
 - **Historial técnico de estados de pantalla** (`HistorialEstadoPantalla`), opcional en el documento.
 - **Control de concurrencia en la edición:** si dos usuarios editan la misma lista, gana el último en guardar.
 - **Exportación del paquete en segundo plano:** hoy se genera dentro de la petición HTTP.
-- **Cuentas:** recuperación de contraseña por correo y autenticación en dos pasos.
+- **Cuentas:** envío automático de las invitaciones por correo (hoy el administrador comparte el enlace),
+  recuperación de contraseña por correo y autenticación en dos pasos.
 - Ancho y alto de las imágenes no se calculan al subirlas.
 - Pruebas de los casos de uso con repositorios simulados y pruebas de integración de la API.

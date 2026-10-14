@@ -69,6 +69,21 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Historial
             return new PaginaDto<HistorialExportacionDto>(elementos, total, paginaActual, tamano);
         }
 
+        public async Task<ResumenHistorialDto> ResumirAsync(FiltroHistorial filtro, CancellationToken ct = default)
+        {
+            var publicaciones = await _publicaciones.ResumirHistorialAsync(filtro, ct);
+            var exportaciones = await _exportaciones.ResumirHistorialAsync(filtro, ct);
+            return new ResumenHistorialDto(
+                publicaciones.Total,
+                publicaciones.Retiradas,
+                publicaciones.Ultima?.FechaPublicacionUtc,
+                publicaciones.Ultima?.ListaReproduccion.Nombre,
+                publicaciones.Ultima?.NumeroVersion,
+                exportaciones.Total,
+                exportaciones.Completadas,
+                exportaciones.BytesCompletadas);
+        }
+
         private Task<IReadOnlyDictionary<int, string>> ObtenerNombresAsync(IEnumerable<int?> ids, CancellationToken ct) =>
             _gestorUsuarios.ObtenerNombresAsync(ids.Where(i => i.HasValue).Select(i => i!.Value).Distinct(), ct);
 

@@ -31,6 +31,7 @@ app.UseAuthorization();
 var api = app.MapGroup("/api");
 api.MapearAutenticacion();
 api.MapearUsuarios();
+api.MapearInvitaciones();
 api.MapearSucursales();
 api.MapearPantallas();
 api.MapearMultimedia();

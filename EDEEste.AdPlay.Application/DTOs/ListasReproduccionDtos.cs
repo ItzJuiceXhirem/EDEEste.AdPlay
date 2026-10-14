@@ -2,6 +2,8 @@ using EDEEste.AdPlay.Domain.Enums;
 
 namespace EDEEste.AdPlay.Application.DTOs
 {
+    /// <param name="DuracionTotalSegundos">Lo que dura una vuelta completa de la lista con su contenido actual.</param>
+    /// <param name="UltimaVersionPublicada">Número de la versión publicada más reciente; nulo si nunca se publicó.</param>
     public sealed record ListaReproduccionResumenDto(
         int Id,
         string Nombre,
@@ -9,7 +11,9 @@ namespace EDEEste.AdPlay.Application.DTOs
         bool EstaActiva,
         int CantidadElementos,
         DateTime FechaCreacionUtc,
-        DateTime? FechaActualizacionUtc);
+        DateTime? FechaActualizacionUtc,
+        int DuracionTotalSegundos,
+        int? UltimaVersionPublicada);
 
     public sealed record ListaReproduccionDto(
         int Id,

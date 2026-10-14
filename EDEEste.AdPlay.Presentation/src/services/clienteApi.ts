@@ -149,6 +149,60 @@ export async function solicitarArchivo(ruta: string): Promise<{ blob: Blob; nomb
   return { blob: await respuesta.blob(), nombre: coincidencia ? decodeURIComponent(coincidencia[1]) : null }
 }
 
+function problemaDeTexto(texto: string): ProblemDetails | undefined {
+  try {
+    return JSON.parse(texto) as ProblemDetails
+  } catch {
+    return undefined
+  }
+}
+
+/**
+ * Envía un formulario informando el avance de la subida (fetch no lo permite; XMLHttpRequest sí).
+ * alEnviado se llama cuando el archivo terminó de subir y el servidor empieza a validarlo.
+ */
+export async function subirConProgreso<T>(
+  ruta: string,
+  formulario: FormData,
+  alProgreso: (fraccion: number) => void,
+  alEnviado?: () => void,
+): Promise<T> {
+  const intentar = () =>
+    new Promise<{ estado: number; cuerpo: string }>((resolver, rechazar) => {
+      const xhr = new XMLHttpRequest()
+      xhr.open('POST', urlApi(ruta))
+      const tokens = leerTokens()
+      if (tokens) {
+        xhr.setRequestHeader('Authorization', `Bearer ${tokens.accessToken}`)
+      }
+      xhr.upload.onprogress = (e) => e.lengthComputable && alProgreso(e.loaded / e.total)
+      xhr.upload.onload = () => alEnviado?.()
+      xhr.onload = () => resolver({ estado: xhr.status, cuerpo: xhr.responseText })
+      xhr.onerror = () =>
+        rechazar(
+          new ErrorApi(0, {
+            detail: `No se pudo conectar con el servidor (${URL_BASE_API}). Verifique la conexión e intente de nuevo.`,
+          }),
+        )
+      xhr.send(formulario)
+    })
+
+  let respuesta = await intentar()
+  if (respuesta.estado === 401 && leerTokens()) {
+    if (await renovarSesion()) {
+      alProgreso(0)
+      respuesta = await intentar()
+    }
+    if (respuesta.estado === 401) {
+      notificarSesionExpirada()
+    }
+  }
+  if (respuesta.estado < 200 || respuesta.estado >= 300) {
+    throw new ErrorApi(respuesta.estado, problemaDeTexto(respuesta.cuerpo))
+  }
+  return JSON.parse(respuesta.cuerpo) as T
+}
+
 export const api = {
   get: <T>(ruta: string, opciones: OpcionesSolicitud = {}) => solicitar<T>(ruta, opciones),
   post: <T>(ruta: string, cuerpo?: unknown, opciones: OpcionesSolicitud = {}) =>

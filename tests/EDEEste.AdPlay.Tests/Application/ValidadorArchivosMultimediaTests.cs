@@ -63,5 +63,25 @@ namespace EDEEste.AdPlay.Tests.Application
             Assert.Throws<ExcepcionValidacion>(() =>
                 ValidadorArchivosMultimedia.Validar("foto.png", "image/png", longitud, CabeceraPng, Opciones));
         }
+
+        [Fact]
+        public void Validar_imagen_acepta_imagenes_con_el_limite_indicado()
+        {
+            var (mime, extension) = ValidadorArchivosMultimedia.ValidarImagen("perfil.jpg", "image/jpeg", 500, CabeceraJpeg, maximoBytes: 1000);
+
+            Assert.Equal("image/jpeg", mime);
+            Assert.Equal(".jpg", extension);
+            Assert.Throws<ExcepcionValidacion>(() =>
+                ValidadorArchivosMultimedia.ValidarImagen("perfil.jpg", "image/jpeg", 1001, CabeceraJpeg, maximoBytes: 1000));
+        }
+
+        [Fact]
+        public void Validar_imagen_rechaza_videos_aunque_sean_validos_como_multimedia()
+        {
+            var error = Assert.Throws<ExcepcionValidacion>(() =>
+                ValidadorArchivosMultimedia.ValidarImagen("clip.mp4", "video/mp4", 500, CabeceraMp4, maximoBytes: 1000));
+
+            Assert.DoesNotContain(".mp4", error.Errores["Archivo"][0]);
+        }
     }
 }

@@ -1,0 +1,278 @@
+.portada {
+  position: relative;
+  height: 120px;
+  border-radius: 16px 16px 0 0;
+  overflow: clip;
+  background: radial-gradient(circle at 18% 22%, #ffd6c0 0%, #ffb4a2 32%, #e5989b 68%, #b5838d 100%);
+}
+
+.portada::after {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(40% 50% at 80% 30%, rgba(255, 255, 255, .35), transparent 60%), radial-gradient(30% 40% at 30% 90%, rgba(255, 224, 127, .3), transparent 60%);
+  animation: deriva-portada 14s ease-in-out infinite;
+}
+
+.oscuro .portada {
+  background: radial-gradient(circle at 18% 22%, #6b4446 0%, #4a2f33 32%, #2b2230 68%, #1b202a 100%);
+}
+
+.contenedor-avatar {
+  position: relative;
+  margin-top: -48px;
+}
+
+.avatar-grande {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(145deg, #FFB4A2, #E5989B);
+  color: #ffffff;
+  font: 700 32px/1 var(--fuente);
+  text-shadow: 0 1px 3px rgba(110, 46, 56, .35);
+  box-shadow: 0 0 0 5px var(--elevada), 0 10px 24px -6px rgba(110, 46, 56, .4);
+  transition: box-shadow .45s;
+}
+
+.avatar-grande img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.boton-camara {
+  position: absolute;
+  right: -2px;
+  bottom: 2px;
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--coral);
+  color: #ffffff;
+  box-shadow: 0 0 0 3px var(--elevada), 0 4px 10px rgba(229, 152, 155, .5);
+  cursor: pointer;
+  transition: transform .2s, box-shadow .45s;
+}
+
+.boton-camara:hover {
+  transform: scale(1.1);
+}
+
+.contenedor-avatar:focus-within .boton-camara {
+  outline: 3px solid var(--anillo);
+  outline-offset: 2px;
+}
+
+.fila-dato {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--hundida);
+  font-size: 14px;
+}
+
+.circulo-exito {
+  width: 64px;
+  height: 64px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--coral);
+  color: #ffffff;
+  box-shadow: 0 12px 28px -8px rgba(229, 152, 155, .7);
+  animation: latido .7s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.opcion-apariencia {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1.5px solid var(--borde);
+  background: var(--superficie);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .25s, box-shadow .25s, transform .25s;
+}
+
+.opcion-apariencia:hover {
+  transform: translateY(-2px);
+  border-color: var(--durazno);
+}
+
+.opcion-apariencia.activa {
+  border-color: var(--coral);
+  box-shadow: 0 0 0 3px var(--anillo);
+}
+
+.opcion-apariencia:focus-visible,
+.boton-zoom:focus-visible,
+.recorte:focus-visible {
+  outline: 3px solid var(--anillo);
+  outline-offset: 2px;
+}
+
+.vista-tema {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.vista-tema .vt-barra {
+  height: 16%;
+  display: flex;
+  align-items: center;
+  gap: 6%;
+  padding: 0 6%;
+}
+
+.vista-tema .vt-cuerpo {
+  flex: 1;
+  display: flex;
+}
+
+.vista-tema .vt-menu {
+  width: 26%;
+  padding: 6%;
+  display: flex;
+  flex-direction: column;
+  gap: 9%;
+}
+
+.vista-tema .vt-contenido {
+  flex: 1;
+  padding: 6%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8%;
+}
+
+.vista-tema i {
+  display: block;
+  border-radius: 9999px;
+}
+
+.vista-tema b {
+  display: block;
+  border-radius: 6px;
+}
+
+.marca-activa {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--coral);
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(229, 152, 155, .5);
+  animation: latido .45s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+/* Encuadre de la foto de perfil. */
+.recorte {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  flex: none;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #15121a;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.recorte:active {
+  cursor: grabbing;
+}
+
+.recorte img,
+.vista-previa img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.mascara {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 999px rgba(15, 12, 18, .55), inset 0 0 0 2px rgba(255, 255, 255, .85);
+  pointer-events: none;
+}
+
+.vista-previa {
+  position: relative;
+  flex: none;
+  display: block;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: var(--hundida);
+  box-shadow: 0 0 0 3px var(--elevada), 0 0 0 4px var(--borde);
+}
+
+.boton-zoom {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 9999px;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  color: var(--titulo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: transform .2s, border-color .2s;
+}
+
+.boton-zoom:hover {
+  transform: scale(1.06);
+  border-color: var(--durazno);
+}
+
+.deslizador {
+  flex: 1;
+  accent-color: var(--coral);
+  cursor: pointer;
+}
+
+@keyframes deriva-portada {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-4%, 3%);
+  }
+}

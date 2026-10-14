@@ -48,22 +48,38 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Reportes
                     .ListarUltimasPublicadasAsync(asignaciones.Select(a => a.ListaReproduccionId).Distinct(), ct))
                 .ToDictionary(p => p.ListaReproduccionId);
 
+            var esperadas = pantallas.ToDictionary(
+                p => p.Id,
+                p => p.EstaHabilitada ? ResolverEsperada(p, gruposPorId, asignaciones, ultimasPorLista, ahora) : null);
+
+            var idsEsperadas = esperadas.Values.OfType<PublicacionLista>().Select(p => p.Id).Distinct();
+            var elementosPorPublicacion = (await _publicaciones.ListarElementosAsync(idsEsperadas, ct))
+                .GroupBy(e => e.PublicacionListaId)
+                .ToDictionary(
+                    g => g.Key,
+                    g => (IReadOnlyList<ElementoReproduccionDto>)g
+                        .OrderBy(e => e.Posicion)
+                        .Select(e => new ElementoReproduccionDto(
+                            e.Posicion,
+                            e.AnuncioId,
+                            e.Anuncio.Titulo,
+                            e.ArchivoMultimediaId,
+                            e.ArchivoMultimedia.TipoMultimedia,
+                            e.DuracionSegundos))
+                        .ToList());
+
             return pantallas
-                .Select(p => ConstruirFila(p, gruposPorId, asignaciones, ultimasPorLista, ahora))
+                .Select(p => ConstruirFila(p, esperadas[p.Id], elementosPorPublicacion, ahora))
                 .ToList();
         }
 
         private EstadoPantallaReporteDto ConstruirFila(
             Pantalla pantalla,
-            IReadOnlyDictionary<int, GrupoPantalla> gruposPorId,
-            IReadOnlyList<AsignacionLista> asignaciones,
-            IReadOnlyDictionary<int, PublicacionLista> ultimasPorLista,
+            PublicacionLista? esperada,
+            IReadOnlyDictionary<int, IReadOnlyList<ElementoReproduccionDto>> elementosPorPublicacion,
             DateTime ahoraUtc)
         {
             var estadoOperativo = pantalla.CalcularEstadoOperativo(ahoraUtc, _opciones.VentanaDesconexion);
-            var esperada = pantalla.EstaHabilitada
-                ? ResolverEsperada(pantalla, gruposPorId, asignaciones, ultimasPorLista, ahoraUtc)
-                : null;
             var reportada = pantalla.Estado?.UltimaVersionReportada;
 
             // Solo el reproductor web informa su versión; en modo local el servidor no puede saberlo.
@@ -71,6 +87,13 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Reportes
                 && estadoOperativo != EstadoOperativoPantalla.SinDatos
                 && esperada is not null
                     ? reportada == esperada.IdentificadorVersion
+                    : null;
+
+            // La posición informada solo tiene sentido sobre los elementos de la versión que realmente está mostrando.
+            var estado = pantalla.Estado;
+            var reproduccion = estadoOperativo == EstadoOperativoPantalla.EnLinea && actualizada == true
+                && estado is { PosicionReproduccion: { } posicion, AnuncioReproduccionId: { } anuncioId, SegundoReproduccion: { } segundo }
+                    ? new ReproduccionReportadaDto(posicion, anuncioId, segundo, estado.UltimaConexionUtc)
                     : null;
 
             return new EstadoPantallaReporteDto(
@@ -89,7 +112,10 @@ namespace EDEEste.AdPlay.Application.CasosDeUso.Reportes
                 esperada?.IdentificadorVersion,
                 reportada,
                 actualizada,
-                pantalla.Estado?.UltimoError);
+                pantalla.Estado?.UltimoError,
+                esperada?.NumeroVersion,
+                esperada is null ? [] : elementosPorPublicacion.GetValueOrDefault(esperada.Id) ?? [],
+                reproduccion);
         }
 
         private static PublicacionLista? ResolverEsperada(

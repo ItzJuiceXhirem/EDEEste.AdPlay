@@ -10,8 +10,13 @@ namespace EDEEste.AdPlay.Application.Opciones
         public int TamanoMaximoImagenMb { get; set; } = 20;
         public int TamanoMaximoVideoMb { get; set; } = 500;
 
+        /// <summary>El panel recorta la foto antes de subirla, así que basta con un límite pequeño.</summary>
+        public int TamanoMaximoFotoPerfilMb { get; set; } = 2;
+
         public long TamanoMaximoImagenBytes => TamanoMaximoImagenMb * 1024L * 1024L;
         public long TamanoMaximoVideoBytes => TamanoMaximoVideoMb * 1024L * 1024L;
+        public long TamanoMaximoFotoPerfilBytes => TamanoMaximoFotoPerfilMb * 1024L * 1024L;
+        public long TamanoMaximoSolicitudFotoBytes => TamanoMaximoFotoPerfilBytes + MargenFormularioBytes;
 
         /// <summary>Tamaño máximo de una petición de carga: el mayor archivo permitido más el margen del formulario.</summary>
         public long TamanoMaximoSolicitudBytes =>
